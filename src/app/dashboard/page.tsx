@@ -1,15 +1,17 @@
+
 import {
   BarChart,
   UserCheck,
   Users,
+  CalendarCheck,
 } from "lucide-react";
-import Image from "next/image";
 import { format } from "date-fns";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import {
   Table,
@@ -20,9 +22,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { attendanceRecords, students, classes } from "@/lib/data";
+import { attendanceRecords, students, classes, newStudentApplicants } from "@/lib/data";
 import type { AttendanceRecord } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 
 function getStudentById(id: string) {
   return students.find((s) => s.id === id);
@@ -42,9 +45,16 @@ export default function DashboardPage() {
   const presentToday = attendanceRecords.filter(r => r.status === 'Present' || r.status === 'Late').length;
   const attendanceRate = students.length > 0 ? (presentToday / students.length) * 100 : 0;
   
+  const studentsByYear = newStudentApplicants
+    .filter(applicant => applicant.status === 'Accepted')
+    .reduce((acc, applicant) => {
+      acc[applicant.academicYear] = (acc[applicant.academicYear] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Siswa</CardTitle>
@@ -53,7 +63,7 @@ export default function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold">{students.length}</div>
             <p className="text-xs text-muted-foreground">
-              Total siswa terdaftar
+              Total siswa aktif saat ini
             </p>
           </CardContent>
         </Card>
@@ -83,11 +93,32 @@ export default function DashboardPage() {
             </p>
           </CardContent>
         </Card>
+         <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Siswa Diterima</CardTitle>
+            <CalendarCheck className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {Object.keys(studentsByYear).sort().map((year, index) => (
+              <React.Fragment key={year}>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">{year}</span>
+                  <span className="font-bold">{studentsByYear[year]} siswa</span>
+                </div>
+                {index < Object.keys(studentsByYear).length - 1 && <Separator className="my-1.5" />}
+              </React.Fragment>
+            ))}
+             {Object.keys(studentsByYear).length === 0 && (
+                <p className="text-xs text-muted-foreground text-center pt-2">Belum ada siswa diterima.</p>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle>Absensi Terbaru</CardTitle>
+          <CardDescription>5 catatan absensi terakhir hari ini.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -124,6 +155,13 @@ export default function DashboardPage() {
                   </TableRow>
                 );
               })}
+              {attendanceRecords.length === 0 && (
+                <TableRow>
+                    <TableCell colSpan={5} className="text-center h-24">
+                        Belum ada catatan absensi untuk hari ini.
+                    </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
