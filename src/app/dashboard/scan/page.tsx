@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { ScanLine, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { students } from "@/lib/data";
+import { students, classes } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -12,7 +12,7 @@ type ScanStatus = "idle" | "scanning" | "success" | "error";
 
 export default function ScanPage() {
   const [status, setStatus] = useState<ScanStatus>("idle");
-  const [scannedStudent, setScannedStudent] = useState<typeof students[0] | null>(null);
+  const [scannedStudent, setScannedStudent] = useState<(typeof students)[0] | null>(null);
   const { toast } = useToast();
 
   const handleScan = () => {
@@ -52,6 +52,7 @@ export default function ScanPage() {
   }, [status]);
 
   const StatusDisplay = () => {
+    const studentClass = scannedStudent ? classes.find(c => c.id === scannedStudent.classId) : null;
     switch (status) {
       case "success":
         return (
@@ -65,7 +66,7 @@ export default function ScanPage() {
                   <AvatarFallback>{scannedStudent.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <p className="text-lg font-medium text-foreground">{scannedStudent.name}</p>
-                <p className="text-sm text-muted-foreground">ID: {scannedStudent.id} | Class: {scannedStudent.class}</p>
+                <p className="text-sm text-muted-foreground">ID: {scannedStudent.id} | Class: {studentClass?.name || 'N/A'}</p>
               </div>
             )}
           </div>

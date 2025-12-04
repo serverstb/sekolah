@@ -20,12 +20,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { attendanceRecords, students } from "@/lib/data";
+import { attendanceRecords, students, classes } from "@/lib/data";
 import type { AttendanceRecord } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function getStudentById(id: string) {
   return students.find((s) => s.id === id);
+}
+
+function getClassById(id: string) {
+    return classes.find((c) => c.id === id);
 }
 
 function getStatusVariant(status: AttendanceRecord["status"]): "default" | "secondary" | "destructive" {
@@ -99,6 +103,7 @@ export default function DashboardPage() {
             <TableBody>
               {attendanceRecords.slice(0, 5).map((record) => {
                 const student = getStudentById(record.studentId);
+                const studentClass = student ? getClassById(student.classId) : null;
                 return (
                   <TableRow key={record.id}>
                     <TableCell>
@@ -110,7 +115,7 @@ export default function DashboardPage() {
                         <div className="font-medium">{student?.name || "Unknown"}</div>
                       </div>
                     </TableCell>
-                    <TableCell className="hidden sm:table-cell">{student?.class || "N/A"}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{studentClass?.name || "N/A"}</TableCell>
                     <TableCell>{format(record.timestamp, "HH:mm:ss")}</TableCell>
                     <TableCell>{format(record.timestamp, "dd MMM yyyy")}</TableCell>
                     <TableCell className="text-right">

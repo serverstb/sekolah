@@ -3,7 +3,7 @@ import { PlaceHolderImages } from "./placeholder-images";
 export type Student = {
   id: string;
   name: string;
-  class: string;
+  classId: string; // Changed from class
   avatarUrl: string;
   avatarHint: string;
 };
@@ -27,24 +27,13 @@ export type Teacher = {
 export type Class = {
   id: string;
   name: string;
-  walikelas: string;
+  walikelasId: string; // Changed from walikelas
   studentCount: number;
 };
 
 
 const placeholderAvatars = PlaceHolderImages.filter(img => img.id.startsWith("student-avatar-"));
 const teacherPlaceHolderAvatars = PlaceHolderImages.filter(img => img.id.startsWith("teacher-avatar-"));
-
-export const students: Student[] = [
-  { id: "STU-001", name: "Ahmad Dahlan", class: "10-A", avatarUrl: placeholderAvatars[0]?.imageUrl || "", avatarHint: "person portrait" },
-  { id: "STU-002", name: "Budi Santoso", class: "10-B", avatarUrl: placeholderAvatars[1]?.imageUrl || "", avatarHint: "person portrait" },
-  { id: "STU-003", name: "Citra Lestari", class: "11-A", avatarUrl: placeholderAvatars[2]?.imageUrl || "", avatarHint: "person portrait" },
-  { id: "STU-004", name: "Dewi Anggraini", class: "11-A", avatarUrl: placeholderAvatars[3]?.imageUrl || "", avatarHint: "person portrait" },
-  { id: "STU-005", name: "Eko Prasetyo", class: "12-C", avatarUrl: placeholderAvatars[4]?.imageUrl || "", avatarHint: "person portrait" },
-  { id: "STU-006", name: "Fitriani", class: "12-C", avatarUrl: placeholderAvatars[5]?.imageUrl || "", avatarHint: "person portrait" },
-  { id: "STU-007", name: "Gilang Ramadhan", class: "10-B", avatarUrl: placeholderAvatars[6]?.imageUrl || "", avatarHint: "person portrait" },
-  { id: "STU-008", name: "Herlina", class: "11-B", avatarUrl: placeholderAvatars[7]?.imageUrl || "", avatarHint: "person portrait" },
-];
 
 export const teachers: Teacher[] = [
     { id: "TCH-001", name: "Dr. Siti Aminah", nip: "198001012005012001", subject: "Mathematics", avatarUrl: teacherPlaceHolderAvatars[0]?.imageUrl || "", avatarHint: "woman portrait" },
@@ -54,13 +43,23 @@ export const teachers: Teacher[] = [
 ];
 
 export const classes: Class[] = [
-    { id: "CLS-001", name: "10-A", walikelas: "Dr. Siti Aminah", studentCount: 35 },
-    { id: "CLS-002", name: "10-B", walikelas: "Drs. Bambang Wijoyo", studentCount: 34 },
-    { id: "CLS-003", name: "11-A", walikelas: "Retno Wulandari, S.Pd.", studentCount: 32 },
-    { id: "CLS-004", name: "11-B", walikelas: "Agus Setiawan, M.Kom.", studentCount: 33 },
-    { id: "CLS-005", name: "12-A", walikelas: "Dr. Siti Aminah", studentCount: 30 },
+    { id: "CLS-001", name: "10-A", walikelasId: "TCH-001", studentCount: 35 },
+    { id: "CLS-002", name: "10-B", walikelasId: "TCH-002", studentCount: 34 },
+    { id: "CLS-003", name: "11-A", walikelasId: "TCH-003", studentCount: 32 },
+    { id: "CLS-004", name: "11-B", walikelasId: "TCH-004", studentCount: 33 },
+    { id: "CLS-005", name: "12-A", walikelasId: "TCH-001", studentCount: 30 },
 ];
 
+export const students: Student[] = [
+  { id: "STU-001", name: "Ahmad Dahlan", classId: "CLS-001", avatarUrl: placeholderAvatars[0]?.imageUrl || "", avatarHint: "person portrait" },
+  { id: "STU-002", name: "Budi Santoso", classId: "CLS-002", avatarUrl: placeholderAvatars[1]?.imageUrl || "", avatarHint: "person portrait" },
+  { id: "STU-003", name: "Citra Lestari", classId: "CLS-003", avatarUrl: placeholderAvatars[2]?.imageUrl || "", avatarHint: "person portrait" },
+  { id: "STU-004", name: "Dewi Anggraini", classId: "CLS-003", avatarUrl: placeholderAvatars[3]?.imageUrl || "", avatarHint: "person portrait" },
+  { id: "STU-005", name: "Eko Prasetyo", classId: "CLS-005", avatarUrl: placeholderAvatars[4]?.imageUrl || "", avatarHint: "person portrait" },
+  { id: "STU-006", name: "Fitriani", classId: "CLS-005", avatarUrl: placeholderAvatars[5]?.imageUrl || "", avatarHint: "person portrait" },
+  { id: "STU-007", name: "Gilang Ramadhan", classId: "CLS-002", avatarUrl: placeholderAvatars[6]?.imageUrl || "", avatarHint: "person portrait" },
+  { id: "STU-008", name: "Herlina", classId: "CLS-004", avatarUrl: placeholderAvatars[7]?.imageUrl || "", avatarHint: "person portrait" },
+];
 
 function getRandomTime(date: Date, startHour: number, endHour: number): Date {
   const result = new Date(date);

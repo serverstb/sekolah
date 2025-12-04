@@ -16,8 +16,12 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { students } from "@/lib/data";
+import { students, classes } from "@/lib/data";
 import { PlusCircle } from "lucide-react";
+
+function getClassById(id: string) {
+    return classes.find((c) => c.id === id);
+}
 
 export default function StudentsPage() {
   return (
@@ -43,19 +47,22 @@ export default function StudentsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {students.map((student) => (
-              <TableRow key={student.id}>
-                <TableCell>
-                  <Avatar>
-                    <AvatarImage src={student.avatarUrl} alt={student.name} data-ai-hint={student.avatarHint}/>
-                    <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                </TableCell>
-                <TableCell className="font-medium">{student.name}</TableCell>
-                <TableCell>{student.id}</TableCell>
-                <TableCell>{student.class}</TableCell>
-              </TableRow>
-            ))}
+            {students.map((student) => {
+              const studentClass = getClassById(student.classId);
+              return (
+                <TableRow key={student.id}>
+                  <TableCell>
+                    <Avatar>
+                      <AvatarImage src={student.avatarUrl} alt={student.name} data-ai-hint={student.avatarHint}/>
+                      <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  <TableCell className="font-medium">{student.name}</TableCell>
+                  <TableCell>{student.id}</TableCell>
+                  <TableCell>{studentClass?.name || "N/A"}</TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </CardContent>

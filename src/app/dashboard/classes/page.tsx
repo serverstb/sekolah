@@ -14,8 +14,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { classes } from "@/lib/data";
+import { classes, teachers } from "@/lib/data";
 import { PlusCircle } from "lucide-react";
+
+function getTeacherById(id: string) {
+    return teachers.find((t) => t.id === id);
+}
 
 export default function ClassesPage() {
   return (
@@ -40,13 +44,16 @@ export default function ClassesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {classes.map((cls) => (
-              <TableRow key={cls.id}>
-                <TableCell className="font-medium">{cls.name}</TableCell>
-                <TableCell>{cls.walikelas}</TableCell>
-                <TableCell className="text-right">{cls.studentCount}</TableCell>
-              </TableRow>
-            ))}
+            {classes.map((cls) => {
+              const walikelas = getTeacherById(cls.walikelasId);
+              return (
+                <TableRow key={cls.id}>
+                  <TableCell className="font-medium">{cls.name}</TableCell>
+                  <TableCell>{walikelas?.name || "N/A"}</TableCell>
+                  <TableCell className="text-right">{cls.studentCount}</TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </CardContent>
