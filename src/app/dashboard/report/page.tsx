@@ -2,8 +2,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { format } from "date-fns";
-import { DateRange } from "react-day-picker";
+import { format, getYear, getMonth, startOfMonth, endOfMonth } from "date-fns";
 import {
   Card,
   CardContent,
@@ -38,7 +37,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DatePickerWithRange } from "./_components/date-picker-range";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function getStudentById(id: string) {
@@ -65,56 +63,79 @@ function getStatusVariant(
   return "destructive";
 }
 
+const currentYear = getYear(new Date());
+const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
+const months = [
+  { value: "0", label: "January" },
+  { value: "1", label: "February" },
+  { value: "2", label: "March" },
+  { value: "3", label: "April" },
+  { value: "4", label: "May" },
+  { value: "5", label: "June" },
+  { value: "6", label: "July" },
+  { value: "7", label: "August" },
+  { value: "8", label: "September" },
+  { value: "9", label: "October" },
+  { value: "10", label: "November" },
+  { value: "11", label: "December" },
+];
+
 export default function ReportPage() {
   const [classId, setClassId] = useState("all");
-  const [date, setDate] = useState<DateRange | undefined>(undefined);
+  const [selectedYear, setSelectedYear] = useState(currentYear.toString());
+  const [selectedMonth, setSelectedMonth] = useState(getMonth(new Date()).toString());
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    setDate({
-      from: new Date(new Date().setDate(new Date().getDate() - 7)),
-      to: new Date(),
-    });
   }, []);
 
+  const dateRange = useMemo(() => {
+    if (!isClient) return undefined;
+    const year = parseInt(selectedYear);
+    const month = parseInt(selectedMonth);
+    const from = startOfMonth(new Date(year, month));
+    const to = endOfMonth(new Date(year, month));
+    return { from, to };
+  }, [selectedYear, selectedMonth, isClient]);
+
   const filteredStudentRecords = useMemo(() => {
-    if (!isClient) return [];
+    if (!dateRange) return [];
     return attendanceRecords.filter((record) => {
       const recordDate = new Date(record.timestamp);
       const student = getStudentById(record.studentId);
       
       const isClassMatch = classId === "all" || student?.classId === classId;
       
-      const isDateMatch = date?.from && date?.to 
-        ? recordDate >= date.from && recordDate <= date.to
+      const isDateMatch = dateRange.from && dateRange.to 
+        ? recordDate >= dateRange.from && recordDate <= dateRange.to
         : true;
 
       return isClassMatch && isDateMatch;
     });
-  }, [classId, date, isClient]);
+  }, [classId, dateRange]);
 
   const filteredTeacherRecords = useMemo(() => {
-    if (!isClient) return [];
+    if (!dateRange) return [];
     return teacherAttendanceRecords.filter((record) => {
       const recordDate = new Date(record.timestamp);
-      const isDateMatch = date?.from && date?.to 
-        ? recordDate >= date.from && recordDate <= date.to
+      const isDateMatch = dateRange.from && dateRange.to 
+        ? recordDate >= dateRange.from && recordDate <= dateRange.to
         : true;
       return isDateMatch;
     });
-  }, [date, isClient]);
+  }, [dateRange]);
 
   const filteredEmployeeRecords = useMemo(() => {
-    if (!isClient) return [];
+    if (!dateRange) return [];
     return employeeAttendanceRecords.filter((record) => {
       const recordDate = new Date(record.timestamp);
-      const isDateMatch = date?.from && date?.to 
-        ? recordDate >= date.from && recordDate <= date.to
+      const isDateMatch = dateRange.from && dateRange.to 
+        ? recordDate >= dateRange.from && recordDate <= dateRange.to
         : true;
       return isDateMatch;
     });
-  }, [date, isClient]);
+  }, [dateRange]);
 
   if (!isClient) {
     return null; // or a loading skeleton
@@ -125,7 +146,7 @@ export default function ReportPage() {
       <CardHeader>
         <CardTitle>Attendance Report</CardTitle>
         <CardDescription>
-          View and filter attendance records for students, teachers, and employees.
+          View and filter attendance records for students, teachers, and employees by month.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -138,10 +159,38 @@ export default function ReportPage() {
             </TabsList>
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
-                 <label htmlFor="date-filter" className="text-sm font-medium">
-                    Date Range:
+                 <label htmlFor="year-filter" className="text-sm font-medium">
+                    Year:
                  </label>
-                 <DatePickerWithRange date={date} setDate={setDate} />
+                 <Select value={selectedYear} onValueChange={setSelectedYear}>
+                    <SelectTrigger className="w-[120px]">
+                      <SelectValue placeholder="Select Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {years.map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                 </Select>
+              </div>
+              <div className="flex items-center gap-2">
+                 <label htmlFor="month-filter" className="text-sm font-medium">
+                    Month:
+                 </label>
+                 <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select Month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {months.map((month) => (
+                        <SelectItem key={month.value} value={month.value}>
+                          {month.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                 </Select>
               </div>
             </div>
           </div>
@@ -353,5 +402,3 @@ export default function ReportPage() {
     </Card>
   );
 }
-
-    
