@@ -72,6 +72,7 @@ export type NewStudentApplicant = {
   birthDate: Date;
   gender: Gender;
   address: string;
+  academicYear: string;
 };
 
 export type TeachingJournal = {
@@ -181,10 +182,10 @@ export const employeeAttendanceRecords: EmployeeAttendanceRecord[] = [
 ];
 
 export const newStudentApplicants: NewStudentApplicant[] = [
-  { id: "APP-001", name: "Indah Permatasari", previousSchool: "SMPN 1 Jakarta", registrationDate: subDays(today, 5), status: "Pending", parentName: "Haryono", contact: "081234567890", birthPlace: "Jakarta", birthDate: new Date("2008-05-15"), gender: "Perempuan", address: "Jl. Merdeka No. 10, Jakarta" },
-  { id: "APP-002", name: "Rizky Alamsyah", previousSchool: "SMP Bintang Harapan", registrationDate: subDays(today, 3), status: "Pending", parentName: "Susanti", contact: "081234567891", birthPlace: "Bandung", birthDate: new Date("2008-08-20"), gender: "Laki-laki", address: "Jl. Kemerdekaan No. 25, Bandung" },
-  { id: "APP-003", name: "Putri Anggraini", previousSchool: "SMP Cipta Karya", registrationDate: subDays(today, 10), status: "Accepted", parentName: "Budiarto", contact: "081234567892", birthPlace: "Surabaya", birthDate: new Date("2008-02-10"), gender: "Perempuan", address: "Jl. Pahlawan No. 5, Surabaya" },
-  { id: "APP-004", name: "Doni Saputra", previousSchool: "SMPN 5 Bandung", registrationDate: subDays(today, 15), status: "Rejected", parentName: "Sari", contact: "081234567893", birthPlace: "Medan", birthDate: new Date("2008-11-30"), gender: "Laki-laki", address: "Jl. Sudirman No. 1, Medan" },
+  { id: "APP-001", name: "Indah Permatasari", previousSchool: "SMPN 1 Jakarta", registrationDate: subDays(today, 5), status: "Pending", parentName: "Haryono", contact: "081234567890", birthPlace: "Jakarta", birthDate: new Date("2008-05-15"), gender: "Perempuan", address: "Jl. Merdeka No. 10, Jakarta", academicYear: "2024/2025" },
+  { id: "APP-002", name: "Rizky Alamsyah", previousSchool: "SMP Bintang Harapan", registrationDate: subDays(today, 3), status: "Pending", parentName: "Susanti", contact: "081234567891", birthPlace: "Bandung", birthDate: new Date("2008-08-20"), gender: "Laki-laki", address: "Jl. Kemerdekaan No. 25, Bandung", academicYear: "2024/2025" },
+  { id: "APP-003", name: "Putri Anggraini", previousSchool: "SMP Cipta Karya", registrationDate: subDays(today, 10), status: "Accepted", parentName: "Budiarto", contact: "081234567892", birthPlace: "Surabaya", birthDate: new Date("2008-02-10"), gender: "Perempuan", address: "Jl. Pahlawan No. 5, Surabaya", academicYear: "2023/2024" },
+  { id: "APP-004", name: "Doni Saputra", previousSchool: "SMPN 5 Bandung", registrationDate: subDays(today, 15), status: "Rejected", parentName: "Sari", contact: "081234567893", birthPlace: "Medan", birthDate: new Date("2008-11-30"), gender: "Laki-laki", address: "Jl. Sudirman No. 1, Medan", academicYear: "2023/2024" },
 ];
 
 export const teachingJournals: TeachingJournal[] = [

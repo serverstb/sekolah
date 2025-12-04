@@ -115,7 +115,7 @@ export default function AdmissionsPage() {
                 <TableHead>Umur</TableHead>
                 <TableHead>Sekolah Asal</TableHead>
                 <TableHead>Jenis Kelamin</TableHead>
-                <TableHead>Alamat</TableHead>
+                <TableHead>Tahun Ajaran</TableHead>
                 <TableHead>Tanggal Registrasi</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Aksi</TableHead>
@@ -128,7 +128,7 @@ export default function AdmissionsPage() {
                   <TableCell>{calculateAge(applicant.birthDate)}</TableCell>
                   <TableCell>{applicant.previousSchool}</TableCell>
                   <TableCell>{applicant.gender}</TableCell>
-                  <TableCell className="max-w-[200px] truncate">{applicant.address}</TableCell>
+                  <TableCell>{applicant.academicYear}</TableCell>
                   <TableCell>
                     {format(applicant.registrationDate, "dd MMM yyyy")}
                   </TableCell>
@@ -200,3 +200,5 @@ export default function AdmissionsPage() {
     </>
   );
 }
+
+    

@@ -30,6 +30,9 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
+const currentYear = new Date().getFullYear();
+const academicYears = Array.from({ length: 3 }, (_, i) => `${currentYear + i}/${currentYear + i + 1}`);
+
 const formSchema = z.object({
   name: z.string().min(2, "Nama harus memiliki minimal 2 karakter."),
   previousSchool: z.string().min(3, "Sekolah asal harus diisi."),
@@ -41,6 +44,7 @@ const formSchema = z.object({
   address: z.string().min(10, "Alamat harus diisi."),
   parentName: z.string().min(2, "Nama orang tua harus diisi."),
   contact: z.string().min(10, "Nomor kontak harus diisi."),
+  academicYear: z.string().nonempty("Tahun ajaran harus dipilih."),
 });
 
 type AdmissionFormValues = z.infer<typeof formSchema>;
@@ -61,6 +65,7 @@ export function AdmissionForm({ onSuccess }: AdmissionFormProps) {
       address: "",
       parentName: "",
       contact: "",
+      academicYear: "",
     },
   });
 
@@ -101,6 +106,28 @@ export function AdmissionForm({ onSuccess }: AdmissionFormProps) {
               <FormMessage />
             </FormItem>
           )}
+        />
+         <FormField
+            control={form.control}
+            name="academicYear"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Tahun Ajaran</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Pilih tahun ajaran" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                        {academicYears.map(year => (
+                            <SelectItem key={year} value={year}>{year}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <FormMessage />
+                </FormItem>
+            )}
         />
         <div className="grid grid-cols-2 gap-4">
             <FormField
