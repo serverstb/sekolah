@@ -22,6 +22,7 @@ export type Teacher = {
   subject: string;
   avatarUrl: string;
   avatarHint: string;
+  taughtClassIds: string[];
 };
 
 export type Class = {
@@ -36,10 +37,10 @@ const placeholderAvatars = PlaceHolderImages.filter(img => img.id.startsWith("st
 const teacherPlaceHolderAvatars = PlaceHolderImages.filter(img => img.id.startsWith("teacher-avatar-"));
 
 export const teachers: Teacher[] = [
-    { id: "TCH-001", name: "Dr. Siti Aminah", nip: "198001012005012001", subject: "Mathematics", avatarUrl: teacherPlaceHolderAvatars[0]?.imageUrl || "", avatarHint: "woman portrait" },
-    { id: "TCH-002", name: "Drs. Bambang Wijoyo", nip: "197505102003121002", subject: "Physics", avatarUrl: teacherPlaceHolderAvatars[1]?.imageUrl || "", avatarHint: "man portrait" },
-    { id: "TCH-003", name: "Retno Wulandari, S.Pd.", nip: "198811202010012003", subject: "Indonesian", avatarUrl: teacherPlaceHolderAvatars[2]?.imageUrl || "", avatarHint: "woman portrait" },
-    { id: "TCH-004", name: "Agus Setiawan, M.Kom.", nip: "198208152008031004", subject: "Computer Science", avatarUrl: teacherPlaceHolderAvatars[3]?.imageUrl || "", avatarHint: "man portrait" },
+    { id: "TCH-001", name: "Dr. Siti Aminah", nip: "198001012005012001", subject: "Mathematics", avatarUrl: teacherPlaceHolderAvatars[0]?.imageUrl || "", avatarHint: "woman portrait", taughtClassIds: ["CLS-001", "CLS-003", "CLS-005"] },
+    { id: "TCH-002", name: "Drs. Bambang Wijoyo", nip: "197505102003121002", subject: "Physics", avatarUrl: teacherPlaceHolderAvatars[1]?.imageUrl || "", avatarHint: "man portrait", taughtClassIds: ["CLS-002", "CLS-004"] },
+    { id: "TCH-003", name: "Retno Wulandari, S.Pd.", nip: "198811202010012003", subject: "Indonesian", avatarUrl: teacherPlaceHolderAvatars[2]?.imageUrl || "", avatarHint: "woman portrait", taughtClassIds: ["CLS-001", "CLS-002", "CLS-003"] },
+    { id: "TCH-004", name: "Agus Setiawan, M.Kom.", nip: "198208152008031004", subject: "Computer Science", avatarUrl: teacherPlaceHolderAvatars[3]?.imageUrl || "", avatarHint: "man portrait", taughtClassIds: ["CLS-004", "CLS-005"] },
 ];
 
 export const classes: Class[] = [

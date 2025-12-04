@@ -15,8 +15,9 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { teachers } from "@/lib/data";
+import { teachers, classes } from "@/lib/data";
 import { PlusCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function TeachersPage() {
   return (
@@ -39,6 +40,7 @@ export default function TeachersPage() {
               <TableHead>Name</TableHead>
               <TableHead>NIP</TableHead>
               <TableHead>Subject</TableHead>
+              <TableHead>Classes Taught</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -53,6 +55,14 @@ export default function TeachersPage() {
                 <TableCell className="font-medium">{teacher.name}</TableCell>
                 <TableCell>{teacher.nip}</TableCell>
                 <TableCell>{teacher.subject}</TableCell>
+                <TableCell>
+                  <div className="flex flex-wrap gap-1">
+                    {teacher.taughtClassIds.map((classId) => {
+                      const taughtClass = classes.find(c => c.id === classId);
+                      return taughtClass ? <Badge variant="secondary" key={classId}>{taughtClass.name}</Badge> : null;
+                    })}
+                  </div>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
