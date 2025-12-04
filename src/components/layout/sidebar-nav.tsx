@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ScanLine, Users } from "lucide-react";
+import { LayoutDashboard, ScanLine, Users, UserSquare, School } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuItem,
@@ -25,6 +25,16 @@ const navItems = [
     label: "Students",
     icon: Users,
   },
+  {
+    href: "/dashboard/teachers",
+    label: "Teachers",
+    icon: UserSquare,
+  },
+  {
+    href: "/dashboard/classes",
+    label: "Classes",
+    icon: School,
+  },
 ];
 
 export function SidebarNav() {
@@ -36,7 +46,7 @@ export function SidebarNav() {
         <SidebarMenuItem key={item.href}>
           <SidebarMenuButton
             asChild
-            isActive={pathname === item.href}
+            isActive={pathname.startsWith(item.href) && (item.href === '/dashboard' ? pathname === item.href : true)}
             tooltip={item.label}
           >
             <Link href={item.href}>
