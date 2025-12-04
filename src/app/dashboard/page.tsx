@@ -47,39 +47,39 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Siswa</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{students.length}</div>
             <p className="text-xs text-muted-foreground">
-              Total registered students
+              Total siswa terdaftar
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Present Today</CardTitle>
+            <CardTitle className="text-sm font-medium">Hadir Hari Ini</CardTitle>
             <UserCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{presentToday}</div>
             <p className="text-xs text-muted-foreground">
-              {students.length - presentToday} students absent
+              {students.length - presentToday} siswa tidak hadir
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Attendance Rate
+              Tingkat Kehadiran
             </CardTitle>
             <BarChart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{attendanceRate.toFixed(1)}%</div>
             <p className="text-xs text-muted-foreground">
-              For today's attendance
+              Untuk kehadiran hari ini
             </p>
           </CardContent>
         </Card>
@@ -87,16 +87,16 @@ export default function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Attendance</CardTitle>
+          <CardTitle>Absensi Terbaru</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Student</TableHead>
-                <TableHead className="hidden sm:table-cell">Class</TableHead>
-                <TableHead>Time</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead>Siswa</TableHead>
+                <TableHead className="hidden sm:table-cell">Kelas</TableHead>
+                <TableHead>Waktu</TableHead>
+                <TableHead>Tanggal</TableHead>
                 <TableHead className="text-right">Status</TableHead>
               </TableRow>
             </TableHeader>
@@ -112,14 +112,14 @@ export default function DashboardPage() {
                           <AvatarImage src={student?.avatarUrl} alt={student?.name} data-ai-hint={student?.avatarHint} />
                           <AvatarFallback>{student?.name.charAt(0)}</AvatarFallback>
                         </Avatar>
-                        <div className="font-medium">{student?.name || "Unknown"}</div>
+                        <div className="font-medium">{student?.name || "Tidak Dikenal"}</div>
                       </div>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">{studentClass?.name || "N/A"}</TableCell>
                     <TableCell>{format(record.timestamp, "HH:mm:ss")}</TableCell>
                     <TableCell>{format(record.timestamp, "dd MMM yyyy")}</TableCell>
                     <TableCell className="text-right">
-                       <Badge variant={getStatusVariant(record.status)}>{record.status}</Badge>
+                       <Badge variant={getStatusVariant(record.status)}>{record.status === 'Present' ? 'Hadir' : record.status === 'Late' ? 'Terlambat' : 'Absen'}</Badge>
                     </TableCell>
                   </TableRow>
                 );

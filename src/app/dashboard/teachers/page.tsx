@@ -79,10 +79,10 @@ export default function TeachersPage() {
 
   const handleConfirmDelete = () => {
     if (selectedTeacher) {
-      console.log("Deleting teacher:", selectedTeacher.id);
+      console.log("Menghapus guru:", selectedTeacher.id);
       toast({
-        title: "Teacher Deleted",
-        description: `Teacher "${selectedTeacher.name}" has been deleted.`,
+        title: "Guru Dihapus",
+        description: `Guru "${selectedTeacher.name}" telah dihapus.`,
       });
     }
     setIsAlertOpen(false);
@@ -90,10 +90,10 @@ export default function TeachersPage() {
   };
   
   const handleEditClick = (teacher: Teacher) => {
-    console.log("Editing teacher:", teacher.id);
+    console.log("Mengubah guru:", teacher.id);
      toast({
-        title: "Edit Action",
-        description: `Editing "${teacher.name}". (UI not implemented)`,
+        title: "Aksi Ubah",
+        description: `Mengubah "${teacher.name}". (UI belum diimplementasikan)`,
       });
   };
   
@@ -102,15 +102,15 @@ export default function TeachersPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Teacher Management</CardTitle>
+            <CardTitle>Manajemen Guru</CardTitle>
             <CardDescription>
-              View and manage all registered teachers.
+              Lihat dan kelola semua guru terdaftar.
             </CardDescription>
           </div>
           <DialogTrigger asChild>
              <Button onClick={() => setOpen(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Teacher
+              Tambah Guru
             </Button>
           </DialogTrigger>
         </CardHeader>
@@ -119,11 +119,11 @@ export default function TeachersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[80px]">Avatar</TableHead>
-                <TableHead>Name</TableHead>
+                <TableHead>Nama</TableHead>
                 <TableHead>NIP</TableHead>
-                <TableHead>Subject</TableHead>
-                <TableHead>Classes Taught</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Mata Pelajaran</TableHead>
+                <TableHead>Kelas yang Diajar</TableHead>
+                <TableHead className="text-right">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -169,16 +169,16 @@ export default function TeachersPage() {
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">Open menu</span>
+                                    <span className="sr-only">Buka menu</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                 <DropdownMenuItem onClick={() => handleEditClick(teacher)}>
-                                    Edit
+                                    Ubah
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleDeleteClick(teacher)}>
-                                    Delete
+                                    Hapus
                                 </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -192,7 +192,7 @@ export default function TeachersPage() {
         </CardContent>
          <CardFooter className="flex items-center justify-between pt-6">
           <div className="text-sm text-muted-foreground">
-            Showing page {currentPage} of {totalPages}
+            Halaman {currentPage} dari {totalPages}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -201,7 +201,7 @@ export default function TeachersPage() {
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
-              Previous
+              Sebelumnya
             </Button>
             <Button
               variant="outline"
@@ -209,7 +209,7 @@ export default function TeachersPage() {
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
-              Next
+              Berikutnya
             </Button>
           </div>
         </CardFooter>
@@ -217,9 +217,9 @@ export default function TeachersPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Teacher</DialogTitle>
+            <DialogTitle>Tambah Guru Baru</DialogTitle>
             <DialogDescription>
-              Fill out the form below to register a new teacher.
+              Isi formulir di bawah ini untuk mendaftarkan guru baru.
             </DialogDescription>
           </DialogHeader>
           <TeacherForm onSuccess={handleSuccess} />
@@ -228,15 +228,15 @@ export default function TeachersPage() {
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Apakah Anda benar-benar yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the teacher
+              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus guru secara permanen
               "{selectedTeacher?.name}".
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete}>Continue</AlertDialogAction>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>Lanjutkan</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

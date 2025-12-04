@@ -82,10 +82,10 @@ export default function StudentsPage() {
 
   const handleConfirmDelete = () => {
     if (selectedStudent) {
-      console.log("Deleting student:", selectedStudent.id);
+      console.log("Menghapus siswa:", selectedStudent.id);
       toast({
-        title: "Student Deleted",
-        description: `Student "${selectedStudent.name}" has been deleted.`,
+        title: "Siswa Dihapus",
+        description: `Siswa "${selectedStudent.name}" telah dihapus.`,
       });
     }
     setIsAlertOpen(false);
@@ -93,10 +93,10 @@ export default function StudentsPage() {
   };
   
   const handleEditClick = (student: Student) => {
-    console.log("Editing student:", student.id);
+    console.log("Mengubah siswa:", student.id);
      toast({
-        title: "Edit Action",
-        description: `Editing "${student.name}". (UI not implemented)`,
+        title: "Aksi Ubah",
+        description: `Mengubah "${student.name}". (UI belum diimplementasikan)`,
       });
   };
   
@@ -105,15 +105,15 @@ export default function StudentsPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Student Management</CardTitle>
+            <CardTitle>Manajemen Siswa</CardTitle>
             <CardDescription>
-              View and manage all registered students.
+              Lihat dan kelola semua siswa terdaftar.
             </CardDescription>
           </div>
           <DialogTrigger asChild>
             <Button onClick={() => setOpen(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Student
+              Tambah Siswa
             </Button>
           </DialogTrigger>
         </CardHeader>
@@ -122,10 +122,10 @@ export default function StudentsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[80px]">Avatar</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Student ID</TableHead>
-                <TableHead>Class</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Nama</TableHead>
+                <TableHead>ID Siswa</TableHead>
+                <TableHead>Kelas</TableHead>
+                <TableHead className="text-right">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -152,16 +152,16 @@ export default function StudentsPage() {
                        <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
+                            <span className="sr-only">Buka menu</span>
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => handleEditClick(student)}>
-                            Edit
+                            Ubah
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDeleteClick(student)}>
-                            Delete
+                            Hapus
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -174,7 +174,7 @@ export default function StudentsPage() {
         </CardContent>
         <CardFooter className="flex items-center justify-between pt-6">
           <div className="text-sm text-muted-foreground">
-            Showing page {currentPage} of {totalPages}
+            Halaman {currentPage} dari {totalPages}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -183,7 +183,7 @@ export default function StudentsPage() {
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
-              Previous
+              Sebelumnya
             </Button>
             <Button
               variant="outline"
@@ -191,7 +191,7 @@ export default function StudentsPage() {
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
-              Next
+              Berikutnya
             </Button>
           </div>
         </CardFooter>
@@ -199,9 +199,9 @@ export default function StudentsPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Student</DialogTitle>
+            <DialogTitle>Tambah Siswa Baru</DialogTitle>
             <DialogDescription>
-              Fill out the form below to register a new student.
+              Isi formulir di bawah ini untuk mendaftarkan siswa baru.
             </DialogDescription>
           </DialogHeader>
           <StudentForm onSuccess={handleSuccess} />
@@ -210,15 +210,15 @@ export default function StudentsPage() {
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Apakah Anda benar-benar yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the student
+              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus siswa secara permanen
               "{selectedStudent?.name}".
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete}>Continue</AlertDialogAction>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>Lanjutkan</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

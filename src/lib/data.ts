@@ -101,14 +101,14 @@ const employeePlaceHolderAvatars = PlaceHolderImages.filter(img => img.id.starts
 
 
 export const subjects: Subject[] = [
-    { id: "SUB-001", name: "Mathematics" },
-    { id: "SUB-002", name: "Physics" },
-    { id: "SUB-003", name: "Indonesian" },
-    { id: "SUB-004", name: "Computer Science" },
-    { id: "SUB-005", name: "Biology" },
-    { id: "SUB-006", name: "Chemistry" },
-    { id: "SUB-007", name: "History" },
-    { id: "SUB-008", name: "English" },
+    { id: "SUB-001", name: "Matematika" },
+    { id: "SUB-002", name: "Fisika" },
+    { id: "SUB-003", name: "Bahasa Indonesia" },
+    { id: "SUB-004", name: "Ilmu Komputer" },
+    { id: "SUB-005", name: "Biologi" },
+    { id: "SUB-006", name: "Kimia" },
+    { id: "SUB-007", name: "Sejarah" },
+    { id: "SUB-008", name: "Bahasa Inggris" },
 ];
 
 export const teachers: Teacher[] = [
@@ -119,9 +119,9 @@ export const teachers: Teacher[] = [
 ];
 
 export const employees: Employee[] = [
-    { id: "EMP-001", name: "Joko Susilo", role: "Administration", avatarUrl: employeePlaceHolderAvatars[0]?.imageUrl || "", avatarHint: "man portrait" },
-    { id: "EMP-002", name: "Sri Rahayu", role: "Librarian", avatarUrl: employeePlaceHolderAvatars[1]?.imageUrl || "", avatarHint: "woman portrait" },
-    { id: "EMP-003", name: "Teguh Santoso", role: "Security", avatarUrl: employeePlaceHolderAvatars[2]?.imageUrl || "", avatarHint: "man portrait" },
+    { id: "EMP-001", name: "Joko Susilo", role: "Administrasi", avatarUrl: employeePlaceHolderAvatars[0]?.imageUrl || "", avatarHint: "man portrait" },
+    { id: "EMP-002", name: "Sri Rahayu", role: "Pustakawan", avatarUrl: employeePlaceHolderAvatars[1]?.imageUrl || "", avatarHint: "woman portrait" },
+    { id: "EMP-003", name: "Teguh Santoso", role: "Keamanan", avatarUrl: employeePlaceHolderAvatars[2]?.imageUrl || "", avatarHint: "man portrait" },
 ];
 
 export const classes: Class[] = [
@@ -182,11 +182,11 @@ export const newStudentApplicants: NewStudentApplicant[] = [
 ];
 
 export const teachingJournals: TeachingJournal[] = [
-    { id: "JNL-001", teacherId: "TCH-001", classId: "CLS-001", date: subDays(today, 1), subjectMatter: "Algebraic Expressions", notes: "Students had difficulty with factoring." },
-    { id: "JNL-002", teacherId: "TCH-001", classId: "CLS-003", date: subDays(today, 1), subjectMatter: "Linear Equations", notes: "Most students understood the concept well." },
-    { id: "JNL-003", teacherId: "TCH-002", classId: "CLS-002", date: subDays(today, 2), subjectMatter: "Newton's Laws of Motion", notes: "Practical examples helped understanding." },
-    { id: "JNL-004", teacherId: "TCH-003", classId: "CLS-001", date: subDays(today, 3), subjectMatter: "Analyzing Poetry", notes: "Discussed the meaning behind 'Hujan Bulan Juni'." },
-    { id: "JNL-005", teacherId: "TCH-004", classId: "CLS-004", date: subDays(today, 1), subjectMatter: "Introduction to HTML", notes: "Students created their first webpage." },
+    { id: "JNL-001", teacherId: "TCH-001", classId: "CLS-001", date: subDays(today, 1), subjectMatter: "Ekspresi Aljabar", notes: "Siswa kesulitan dalam faktorisasi." },
+    { id: "JNL-002", teacherId: "TCH-001", classId: "CLS-003", date: subDays(today, 1), subjectMatter: "Persamaan Linear", notes: "Sebagian besar siswa memahami konsep dengan baik." },
+    { id: "JNL-003", teacherId: "TCH-002", classId: "CLS-002", date: subDays(today, 2), subjectMatter: "Hukum Gerak Newton", notes: "Contoh praktis membantu pemahaman." },
+    { id: "JNL-004", teacherId: "TCH-003", classId: "CLS-001", date: subDays(today, 3), subjectMatter: "Menganalisis Puisi", notes: "Membahas makna di balik 'Hujan Bulan Juni'." },
+    { id: "JNL-005", teacherId: "TCH-004", classId: "CLS-004", date: subDays(today, 1), subjectMatter: "Pengenalan HTML", notes: "Siswa membuat halaman web pertama mereka." },
 ];
 
 export const schedules: Schedule[] = [

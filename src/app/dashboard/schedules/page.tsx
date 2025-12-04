@@ -64,6 +64,13 @@ function getTeacherById(id: string) {
 }
 
 const daysOfWeek: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const daysOfWeekIndonesian: { [key in DayOfWeek]: string } = {
+  Monday: "Senin",
+  Tuesday: "Selasa",
+  Wednesday: "Rabu",
+  Thursday: "Kamis",
+  Friday: "Jumat",
+};
 
 export default function SchedulesPage() {
   const [open, setOpen] = useState(false);
@@ -88,10 +95,10 @@ export default function SchedulesPage() {
 
   const handleConfirmDelete = () => {
     if (selectedSchedule) {
-      console.log("Deleting schedule:", selectedSchedule.id);
+      console.log("Menghapus jadwal:", selectedSchedule.id);
       toast({
-        title: "Schedule Deleted",
-        description: `Schedule entry has been deleted.`,
+        title: "Jadwal Dihapus",
+        description: `Entri jadwal telah dihapus.`,
       });
     }
     setIsAlertOpen(false);
@@ -103,15 +110,15 @@ export default function SchedulesPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Class Schedules</CardTitle>
+            <CardTitle>Jadwal Pelajaran</CardTitle>
             <CardDescription>
-              View and manage class schedules.
+              Lihat dan kelola jadwal pelajaran kelas.
             </CardDescription>
           </div>
           <DialogTrigger asChild>
             <Button onClick={() => setOpen(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Schedule
+              Tambah Jadwal
             </Button>
           </DialogTrigger>
         </CardHeader>
@@ -129,14 +136,14 @@ export default function SchedulesPage() {
                 <div className="mt-4 space-y-6">
                   {daysOfWeek.map((day) => (
                     <div key={day}>
-                      <h3 className="text-lg font-semibold mb-2">{day}</h3>
+                      <h3 className="text-lg font-semibold mb-2">{daysOfWeekIndonesian[day]}</h3>
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[20%]">Time</TableHead>
-                            <TableHead className="w-[35%]">Subject</TableHead>
-                            <TableHead className="w-[35%]">Teacher</TableHead>
-                            <TableHead className="w-[10%] text-right">Actions</TableHead>
+                            <TableHead className="w-[20%]">Waktu</TableHead>
+                            <TableHead className="w-[35%]">Mata Pelajaran</TableHead>
+                            <TableHead className="w-[35%]">Guru</TableHead>
+                            <TableHead className="w-[10%] text-right">Aksi</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -155,13 +162,13 @@ export default function SchedulesPage() {
                                     <DropdownMenu>
                                       <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="h-8 w-8 p-0">
-                                          <span className="sr-only">Open menu</span>
+                                          <span className="sr-only">Buka menu</span>
                                           <MoreHorizontal className="h-4 w-4" />
                                         </Button>
                                       </DropdownMenuTrigger>
                                       <DropdownMenuContent align="end">
                                         <DropdownMenuItem onClick={() => handleDeleteClick(schedule)}>
-                                          Delete
+                                          Hapus
                                         </DropdownMenuItem>
                                       </DropdownMenuContent>
                                     </DropdownMenu>
@@ -175,7 +182,7 @@ export default function SchedulesPage() {
                                 colSpan={4}
                                 className="text-center h-24"
                               >
-                                No schedule for {day}.
+                                Tidak ada jadwal untuk hari {daysOfWeekIndonesian[day]}.
                               </TableCell>
                             </TableRow>
                           )}
@@ -192,9 +199,9 @@ export default function SchedulesPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Schedule</DialogTitle>
+            <DialogTitle>Tambah Jadwal Baru</DialogTitle>
             <DialogDescription>
-              Fill out the form below to create a new schedule entry.
+              Isi formulir di bawah ini untuk membuat entri jadwal baru.
             </DialogDescription>
           </DialogHeader>
           <ScheduleForm onSuccess={handleSuccess} />
@@ -203,14 +210,14 @@ export default function SchedulesPage() {
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Apakah Anda benar-benar yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the schedule entry.
+              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus entri jadwal secara permanen.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete}>Continue</AlertDialogAction>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>Lanjutkan</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Subject name must be at least 2 characters."),
+  name: z.string().min(2, "Nama mata pelajaran minimal harus 2 karakter."),
 });
 
 type SubjectFormValues = z.infer<typeof formSchema>;
@@ -36,10 +36,10 @@ export function SubjectForm({ onSuccess }: SubjectFormProps) {
   });
 
   const onSubmit = (values: SubjectFormValues) => {
-    console.log("New Subject Data:", values);
+    console.log("Data Mata Pelajaran Baru:", values);
     toast({
-        title: "Subject Added",
-        description: `Subject ${values.name} has been successfully created.`,
+        title: "Mata Pelajaran Ditambahkan",
+        description: `Mata pelajaran ${values.name} telah berhasil dibuat.`,
     });
     onSuccess();
   };
@@ -52,16 +52,16 @@ export function SubjectForm({ onSuccess }: SubjectFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Subject Name</FormLabel>
+              <FormLabel>Nama Mata Pelajaran</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Mathematics" {...field} />
+                <Input placeholder="contoh, Matematika" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="flex justify-end">
-          <Button type="submit">Add Subject</Button>
+          <Button type="submit">Tambah Mata Pelajaran</Button>
         </div>
       </form>
     </Form>

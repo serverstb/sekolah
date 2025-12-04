@@ -72,31 +72,31 @@ function getStatusVariant(
 const currentYear = getYear(new Date());
 const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
 const months = [
-  { value: "0", label: "January" },
-  { value: "1", label: "February" },
-  { value: "2", label: "March" },
+  { value: "0", label: "Januari" },
+  { value: "1", label: "Februari" },
+  { value: "2", label: "Maret" },
   { value: "3", label: "April" },
-  { value: "4", label: "May" },
-  { value: "5", label: "June" },
-  { value: "6", label: "July" },
-  { value: "7", label: "August" },
+  { value: "4", label: "Mei" },
+  { value: "5", label: "Juni" },
+  { value: "6", label: "Juli" },
+  { value: "7", label: "Agustus" },
   { value: "8",label: "September" },
-  { value: "9", label: "October" },
+  { value: "9", label: "Oktober" },
   { value: "10", label: "November" },
-  { value: "11", label: "December" },
+  { value: "11", label: "Desember" },
 ];
 
 const chartConfig = {
   present: {
-    label: "Present",
+    label: "Hadir",
     color: "hsl(var(--chart-2))",
   },
   late: {
-    label: "Late",
+    label: "Terlambat",
     color: "hsl(var(--chart-4))",
   },
   absent: {
-    label: "Absent",
+    label: "Absen",
     color: "hsl(var(--chart-5))",
   },
 };
@@ -129,9 +129,9 @@ function AttendanceChart({ data }: AttendanceChartProps) {
           <YAxis />
           <ChartTooltip content={<ChartTooltipContent />} />
           <Legend />
-          <Bar dataKey="present" fill="var(--color-present)" radius={4} />
-          <Bar dataKey="late" fill="var(--color-late)" radius={4} />
-          <Bar dataKey="absent" fill="var(--color-absent)" radius={4} />
+          <Bar dataKey="present" fill="var(--color-present)" radius={4} stackId="a" />
+          <Bar dataKey="late" fill="var(--color-late)" radius={4} stackId="a" />
+          <Bar dataKey="absent" fill="var(--color-absent)" radius={4} stackId="a" />
         </BarChart>
       </ResponsiveContainer>
     </ChartContainer>
@@ -171,9 +171,9 @@ export default function ReportPage() {
       const present = dailyRecords.filter(r => r.status === "Present").length;
       const late = dailyRecords.filter(r => r.status === "Late").length;
       
-      const attendedIds = new Set(dailyRecords.map(r => r[personIdKey]));
-      const absent = allPersons.filter(p => !attendedIds.has(p.id)).length;
-
+      const attendedIds = new Set(dailyRecords.map(r => r[personIdKey as string]));
+      const absent = allPersons.filter(p => !attendedIds.has(p.id as any)).length;
+      
       return {
         date: format(day, "dd/MM"),
         present,
@@ -239,27 +239,27 @@ export default function ReportPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Attendance Report</CardTitle>
+        <CardTitle>Laporan Absensi</CardTitle>
         <CardDescription>
-          View and filter attendance records for students, teachers, and employees by month.
+          Lihat dan filter catatan kehadiran untuk siswa, guru, dan karyawan per bulan.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="students">
           <div className="flex justify-between flex-wrap gap-4">
             <TabsList>
-              <TabsTrigger value="students">Students</TabsTrigger>
-              <TabsTrigger value="teachers">Teachers</TabsTrigger>
-              <TabsTrigger value="employees">Employees</TabsTrigger>
+              <TabsTrigger value="students">Siswa</TabsTrigger>
+              <TabsTrigger value="teachers">Guru</TabsTrigger>
+              <TabsTrigger value="employees">Karyawan</TabsTrigger>
             </TabsList>
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
                  <label htmlFor="year-filter" className="text-sm font-medium">
-                    Year:
+                    Tahun:
                  </label>
                  <Select value={selectedYear} onValueChange={setSelectedYear}>
                     <SelectTrigger className="w-[120px]">
-                      <SelectValue placeholder="Select Year" />
+                      <SelectValue placeholder="Pilih Tahun" />
                     </SelectTrigger>
                     <SelectContent>
                       {years.map((year) => (
@@ -272,11 +272,11 @@ export default function ReportPage() {
               </div>
               <div className="flex items-center gap-2">
                  <label htmlFor="month-filter" className="text-sm font-medium">
-                    Month:
+                    Bulan:
                  </label>
                  <Select value={selectedMonth} onValueChange={setSelectedMonth}>
                     <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select Month" />
+                      <SelectValue placeholder="Pilih Bulan" />
                     </SelectTrigger>
                     <SelectContent>
                       {months.map((month) => (
@@ -294,14 +294,14 @@ export default function ReportPage() {
             <div className="mb-6 flex flex-wrap items-center gap-4">
                <div className="flex items-center gap-2">
                 <label htmlFor="class-filter" className="text-sm font-medium">
-                  Class:
+                  Kelas:
                 </label>
                 <Select value={classId} onValueChange={setClassId}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select a class" />
+                    <SelectValue placeholder="Pilih kelas" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Classes</SelectItem>
+                    <SelectItem value="all">Semua Kelas</SelectItem>
                     {classes.map((cls) => (
                       <SelectItem key={cls.id} value={cls.id}>
                         {cls.name}
@@ -315,10 +315,10 @@ export default function ReportPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Student</TableHead>
-                  <TableHead className="hidden sm:table-cell">Class</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Date</TableHead>
+                  <TableHead>Siswa</TableHead>
+                  <TableHead className="hidden sm:table-cell">Kelas</TableHead>
+                  <TableHead>Waktu</TableHead>
+                  <TableHead>Tanggal</TableHead>
                   <TableHead className="text-right">Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -344,7 +344,7 @@ export default function ReportPage() {
                               </AvatarFallback>
                             </Avatar>
                             <div className="font-medium">
-                              {student?.name || "Unknown"}
+                              {student?.name || "Tidak Dikenal"}
                             </div>
                           </div>
                         </TableCell>
@@ -358,9 +358,7 @@ export default function ReportPage() {
                           {format(record.timestamp, "dd MMM yyyy")}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Badge variant={getStatusVariant(record.status)}>
-                            {record.status}
-                          </Badge>
+                           <Badge variant={getStatusVariant(record.status)}>{record.status === 'Present' ? 'Hadir' : record.status === 'Late' ? 'Terlambat' : 'Absen'}</Badge>
                         </TableCell>
                       </TableRow>
                     );
@@ -368,7 +366,7 @@ export default function ReportPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center h-24">
-                        No attendance records found for the selected filters.
+                        Tidak ada catatan kehadiran yang ditemukan untuk filter yang dipilih.
                     </TableCell>
                   </TableRow>
                 )}
@@ -381,9 +379,9 @@ export default function ReportPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Teacher</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Date</TableHead>
+                  <TableHead>Guru</TableHead>
+                  <TableHead>Waktu</TableHead>
+                  <TableHead>Tanggal</TableHead>
                   <TableHead className="text-right">Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -406,7 +404,7 @@ export default function ReportPage() {
                               </AvatarFallback>
                             </Avatar>
                             <div className="font-medium">
-                              {teacher?.name || "Unknown"}
+                              {teacher?.name || "Tidak Dikenal"}
                             </div>
                           </div>
                         </TableCell>
@@ -417,9 +415,7 @@ export default function ReportPage() {
                           {format(record.timestamp, "dd MMM yyyy")}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Badge variant={getStatusVariant(record.status)}>
-                            {record.status}
-                          </Badge>
+                          <Badge variant={getStatusVariant(record.status)}>{record.status === 'Present' ? 'Hadir' : record.status === 'Late' ? 'Terlambat' : 'Absen'}</Badge>
                         </TableCell>
                       </TableRow>
                     );
@@ -427,7 +423,7 @@ export default function ReportPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center h-24">
-                        No attendance records found for the selected date range.
+                        Tidak ada catatan kehadiran yang ditemukan untuk rentang tanggal yang dipilih.
                     </TableCell>
                   </TableRow>
                 )}
@@ -440,10 +436,10 @@ export default function ReportPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Employee</TableHead>
-                   <TableHead className="hidden sm:table-cell">Role</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Date</TableHead>
+                  <TableHead>Karyawan</TableHead>
+                   <TableHead className="hidden sm:table-cell">Jabatan</TableHead>
+                  <TableHead>Waktu</TableHead>
+                  <TableHead>Tanggal</TableHead>
                   <TableHead className="text-right">Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -466,7 +462,7 @@ export default function ReportPage() {
                               </AvatarFallback>
                             </Avatar>
                             <div className="font-medium">
-                              {employee?.name || "Unknown"}
+                              {employee?.name || "Tidak Dikenal"}
                             </div>
                           </div>
                         </TableCell>
@@ -478,9 +474,7 @@ export default function ReportPage() {
                           {format(record.timestamp, "dd MMM yyyy")}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Badge variant={getStatusVariant(record.status)}>
-                            {record.status}
-                          </Badge>
+                          <Badge variant={getStatusVariant(record.status)}>{record.status === 'Present' ? 'Hadir' : record.status === 'Late' ? 'Terlambat' : 'Absen'}</Badge>
                         </TableCell>
                       </TableRow>
                     );
@@ -488,7 +482,7 @@ export default function ReportPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center h-24">
-                        No attendance records found for the selected date range.
+                        Tidak ada catatan kehadiran yang ditemukan untuk rentang tanggal yang dipilih.
                     </TableCell>
                   </TableRow>
                 )}
@@ -500,5 +494,3 @@ export default function ReportPage() {
     </Card>
   );
 }
-
-    

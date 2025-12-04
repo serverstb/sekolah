@@ -25,8 +25,8 @@ import { teachers } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Class name must be at least 2 characters."),
-  walikelasId: z.string().nonempty("Please select a wali kelas."),
+  name: z.string().min(2, "Nama kelas minimal harus 2 karakter."),
+  walikelasId: z.string().nonempty("Silakan pilih wali kelas."),
 });
 
 type ClassFormValues = z.infer<typeof formSchema>;
@@ -46,10 +46,10 @@ export function ClassForm({ onSuccess }: ClassFormProps) {
   });
 
   const onSubmit = (values: ClassFormValues) => {
-    console.log("New Class Data:", values);
+    console.log("Data Kelas Baru:", values);
     toast({
-        title: "Class Added",
-        description: `Class ${values.name} has been successfully created.`,
+        title: "Kelas Ditambahkan",
+        description: `Kelas ${values.name} telah berhasil dibuat.`,
     });
     onSuccess();
   };
@@ -62,9 +62,9 @@ export function ClassForm({ onSuccess }: ClassFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Class Name</FormLabel>
+              <FormLabel>Nama Kelas</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., 10-A" {...field} />
+                <Input placeholder="contoh, 10-A" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -75,11 +75,11 @@ export function ClassForm({ onSuccess }: ClassFormProps) {
           name="walikelasId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Wali Kelas (Homeroom Teacher)</FormLabel>
+              <FormLabel>Wali Kelas</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a teacher" />
+                    <SelectValue placeholder="Pilih seorang guru" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -95,7 +95,7 @@ export function ClassForm({ onSuccess }: ClassFormProps) {
           )}
         />
         <div className="flex justify-end">
-          <Button type="submit">Add Class</Button>
+          <Button type="submit">Tambah Kelas</Button>
         </div>
       </form>
     </Form>

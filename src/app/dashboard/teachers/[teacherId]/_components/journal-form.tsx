@@ -26,8 +26,8 @@ import { useToast } from "@/hooks/use-toast";
 import { type Teacher, type Class } from "@/lib/data";
 
 const formSchema = z.object({
-  classId: z.string().nonempty("Please select a class."),
-  subjectMatter: z.string().min(3, "Subject matter must be at least 3 characters."),
+  classId: z.string().nonempty("Silakan pilih kelas."),
+  subjectMatter: z.string().min(3, "Materi pelajaran minimal harus 3 karakter."),
   notes: z.string().optional(),
 });
 
@@ -51,10 +51,10 @@ export function JournalForm({ teacher, taughtClasses, onSuccess }: JournalFormPr
   });
 
   const onSubmit = (values: JournalFormValues) => {
-    console.log("New Journal Entry:", { ...values, teacherId: teacher.id, date: new Date() });
+    console.log("Entri Jurnal Baru:", { ...values, teacherId: teacher.id, date: new Date() });
     toast({
-      title: "Journal Entry Added",
-      description: `New entry for class ${taughtClasses.find(c => c.id === values.classId)?.name} has been saved.`,
+      title: "Entri Jurnal Ditambahkan",
+      description: `Entri baru untuk kelas ${taughtClasses.find(c => c.id === values.classId)?.name} telah disimpan.`,
     });
     onSuccess();
   };
@@ -67,11 +67,11 @@ export function JournalForm({ teacher, taughtClasses, onSuccess }: JournalFormPr
           name="classId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Class</FormLabel>
+              <FormLabel>Kelas</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a class" />
+                    <SelectValue placeholder="Pilih kelas" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -91,9 +91,9 @@ export function JournalForm({ teacher, taughtClasses, onSuccess }: JournalFormPr
           name="subjectMatter"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Subject Matter</FormLabel>
+              <FormLabel>Materi Pelajaran</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Introduction to Algebra" {...field} />
+                <Input placeholder="contoh, Pengenalan Aljabar" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -104,10 +104,10 @@ export function JournalForm({ teacher, taughtClasses, onSuccess }: JournalFormPr
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Notes</FormLabel>
+              <FormLabel>Catatan</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Any additional notes about the class session..."
+                  placeholder="Catatan tambahan mengenai sesi kelas..."
                   {...field}
                 />
               </FormControl>
@@ -116,7 +116,7 @@ export function JournalForm({ teacher, taughtClasses, onSuccess }: JournalFormPr
           )}
         />
         <div className="flex justify-end pt-2">
-          <Button type="submit">Save Entry</Button>
+          <Button type="submit">Simpan Entri</Button>
         </div>
       </form>
     </Form>

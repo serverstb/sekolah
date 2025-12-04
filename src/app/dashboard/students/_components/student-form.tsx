@@ -25,8 +25,8 @@ import { classes } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  classId: z.string().nonempty("Please select a class."),
+  name: z.string().min(2, "Nama minimal harus 2 karakter."),
+  classId: z.string().nonempty("Silakan pilih kelas."),
 });
 
 type StudentFormValues = z.infer<typeof formSchema>;
@@ -48,10 +48,10 @@ export function StudentForm({ onSuccess }: StudentFormProps) {
   const onSubmit = (values: StudentFormValues) => {
     // In a real app, you would handle form submission here,
     // e.g., send the data to your server.
-    console.log("New Student Data:", values);
+    console.log("Data Siswa Baru:", values);
     toast({
-        title: "Student Added",
-        description: `${values.name} has been successfully registered.`,
+        title: "Siswa Ditambahkan",
+        description: `${values.name} telah berhasil terdaftar.`,
     });
     // For now, we just call the success callback.
     onSuccess();
@@ -65,9 +65,9 @@ export function StudentForm({ onSuccess }: StudentFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full Name</FormLabel>
+              <FormLabel>Nama Lengkap</FormLabel>
               <FormControl>
-                <Input placeholder="Enter student's full name" {...field} />
+                <Input placeholder="Masukkan nama lengkap siswa" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,11 +78,11 @@ export function StudentForm({ onSuccess }: StudentFormProps) {
           name="classId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Class</FormLabel>
+              <FormLabel>Kelas</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a class" />
+                    <SelectValue placeholder="Pilih kelas" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -98,7 +98,7 @@ export function StudentForm({ onSuccess }: StudentFormProps) {
           )}
         />
         <div className="flex justify-end">
-          <Button type="submit">Add Student</Button>
+          <Button type="submit">Tambah Siswa</Button>
         </div>
       </form>
     </Form>

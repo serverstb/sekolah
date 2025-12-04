@@ -13,32 +13,32 @@ import {
 const navItems = [
   {
     href: "/dashboard",
-    label: "Dashboard",
+    label: "Dasbor",
     icon: LayoutDashboard,
   },
   {
     href: "/dashboard/scan",
-    label: "Scan Attendance",
+    label: "Pindai Absensi",
     icon: ScanLine,
   },
   {
     href: "/dashboard/admissions",
-    label: "Admissions",
+    label: "Penerimaan Siswa",
     icon: UserPlus,
   },
   {
     href: "/dashboard/students",
-    label: "Students",
+    label: "Siswa",
     icon: Users,
   },
   {
     href: "/dashboard/teachers",
-    label: "Teachers",
+    label: "Guru",
     icon: UserSquare,
   },
   {
     href: "/dashboard/classes",
-    label: "Classes",
+    label: "Kelas",
     icon: School,
   },
    {
@@ -48,12 +48,12 @@ const navItems = [
   },
   {
     href: "/dashboard/schedules",
-    label: "Schedules",
+    label: "Jadwal Pelajaran",
     icon: Calendar,
   },
   {
     href: "/dashboard/report",
-    label: "Attendance Report",
+    label: "Laporan Absensi",
     icon: BookText,
   },
 ];

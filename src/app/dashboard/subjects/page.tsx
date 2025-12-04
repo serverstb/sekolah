@@ -78,10 +78,10 @@ export default function SubjectsPage() {
   const handleConfirmDelete = () => {
     if (selectedSubject) {
       // In a real app, you would delete the subject from the database.
-      console.log("Deleting subject:", selectedSubject.id);
+      console.log("Menghapus mata pelajaran:", selectedSubject.id);
       toast({
-        title: "Subject Deleted",
-        description: `Subject "${selectedSubject.name}" has been deleted.`,
+        title: "Mata Pelajaran Dihapus",
+        description: `Mata pelajaran "${selectedSubject.name}" telah dihapus.`,
       });
     }
     setIsAlertOpen(false);
@@ -90,10 +90,10 @@ export default function SubjectsPage() {
   
   const handleEditClick = (subject: Subject) => {
     // In a real app, you would open an edit form.
-    console.log("Editing subject:", subject.id);
+    console.log("Mengubah mata pelajaran:", subject.id);
      toast({
-        title: "Edit Action",
-        description: `Editing "${subject.name}". (UI not implemented)`,
+        title: "Aksi Ubah",
+        description: `Mengubah "${subject.name}". (UI belum diimplementasikan)`,
       });
   };
 
@@ -102,15 +102,15 @@ export default function SubjectsPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Subject Management</CardTitle>
+            <CardTitle>Manajemen Mata Pelajaran</CardTitle>
             <CardDescription>
-              View and manage all subjects.
+              Lihat dan kelola semua mata pelajaran.
             </CardDescription>
           </div>
           <DialogTrigger asChild>
             <Button onClick={() => setOpen(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Subject
+              Tambah Mata Pelajaran
             </Button>
           </DialogTrigger>
         </CardHeader>
@@ -118,9 +118,9 @@ export default function SubjectsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Subject ID</TableHead>
-                <TableHead>Subject Name</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>ID Mata Pelajaran</TableHead>
+                <TableHead>Nama Mata Pelajaran</TableHead>
+                <TableHead className="text-right">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -132,16 +132,16 @@ export default function SubjectsPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">Buka menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => handleEditClick(subject)}>
-                          Edit
+                          Ubah
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleDeleteClick(subject)}>
-                          Delete
+                          Hapus
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -153,7 +153,7 @@ export default function SubjectsPage() {
         </CardContent>
         <CardFooter className="flex items-center justify-between pt-6">
           <div className="text-sm text-muted-foreground">
-            Showing page {currentPage} of {totalPages}
+            Halaman {currentPage} dari {totalPages}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -162,7 +162,7 @@ export default function SubjectsPage() {
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
-              Previous
+              Sebelumnya
             </Button>
             <Button
               variant="outline"
@@ -170,7 +170,7 @@ export default function SubjectsPage() {
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
-              Next
+              Berikutnya
             </Button>
           </div>
         </CardFooter>
@@ -178,9 +178,9 @@ export default function SubjectsPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Subject</DialogTitle>
+            <DialogTitle>Tambah Mata Pelajaran Baru</DialogTitle>
             <DialogDescription>
-              Fill out the form below to create a new subject.
+              Isi formulir di bawah untuk membuat mata pelajaran baru.
             </DialogDescription>
           </DialogHeader>
           <SubjectForm onSuccess={handleSuccess} />
@@ -189,15 +189,15 @@ export default function SubjectsPage() {
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Apakah Anda benar-benar yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the subject
+              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus mata pelajaran secara permanen
               "{selectedSubject?.name}".
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete}>Continue</AlertDialogAction>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>Lanjutkan</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

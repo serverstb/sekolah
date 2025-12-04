@@ -78,8 +78,8 @@ export default function AdmissionsPage() {
         )
     );
     toast({
-        title: "Status Updated",
-        description: `Applicant status has been changed to ${newStatus}.`,
+        title: "Status Diperbarui",
+        description: `Status pendaftar telah diubah menjadi ${newStatus === 'Accepted' ? 'Diterima' : 'Ditolak'}.`,
     });
   };
 
@@ -88,15 +88,15 @@ export default function AdmissionsPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>New Student Admissions</CardTitle>
+            <CardTitle>Penerimaan Siswa Baru</CardTitle>
             <CardDescription>
-              Manage and track new student applications.
+              Kelola dan lacak pendaftaran siswa baru.
             </CardDescription>
           </div>
           <DialogTrigger asChild>
             <Button onClick={() => setOpen(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Applicant
+              Tambah Pendaftar
             </Button>
           </DialogTrigger>
         </CardHeader>
@@ -104,11 +104,11 @@ export default function AdmissionsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Applicant Name</TableHead>
-                <TableHead>Previous School</TableHead>
-                <TableHead>Registration Date</TableHead>
+                <TableHead>Nama Pendaftar</TableHead>
+                <TableHead>Sekolah Asal</TableHead>
+                <TableHead>Tanggal Registrasi</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -121,25 +121,25 @@ export default function AdmissionsPage() {
                   </TableCell>
                   <TableCell>
                     <Badge variant={getStatusVariant(applicant.status)}>
-                      {applicant.status}
+                      {applicant.status === 'Accepted' ? 'Diterima' : applicant.status === 'Pending' ? 'Menunggu' : 'Ditolak'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">Buka menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => handleStatusChange(applicant.id, 'Accepted')}>
                           <Check className="mr-2 h-4 w-4 text-green-600" />
-                          <span>Accept</span>
+                          <span>Terima</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleStatusChange(applicant.id, 'Rejected')}>
                           <X className="mr-2 h-4 w-4 text-red-600" />
-                          <span>Reject</span>
+                          <span>Tolak</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -151,7 +151,7 @@ export default function AdmissionsPage() {
         </CardContent>
         <CardFooter className="flex items-center justify-between pt-6">
           <div className="text-sm text-muted-foreground">
-            Showing page {currentPage} of {totalPages}
+            Halaman {currentPage} dari {totalPages}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -160,7 +160,7 @@ export default function AdmissionsPage() {
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
-              Previous
+              Sebelumnya
             </Button>
             <Button
               variant="outline"
@@ -168,7 +168,7 @@ export default function AdmissionsPage() {
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
-              Next
+              Berikutnya
             </Button>
           </div>
         </CardFooter>
@@ -176,9 +176,9 @@ export default function AdmissionsPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Applicant</DialogTitle>
+            <DialogTitle>Tambah Pendaftar Baru</DialogTitle>
             <DialogDescription>
-              Fill out the form below to register a new student applicant.
+              Isi formulir di bawah ini untuk mendaftarkan siswa baru.
             </DialogDescription>
           </DialogHeader>
           <AdmissionForm onSuccess={handleSuccess} />

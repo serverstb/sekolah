@@ -80,10 +80,10 @@ export default function ClassesPage() {
 
   const handleConfirmDelete = () => {
     if (selectedClass) {
-      console.log("Deleting class:", selectedClass.id);
+      console.log("Menghapus kelas:", selectedClass.id);
       toast({
-        title: "Class Deleted",
-        description: `Class "${selectedClass.name}" has been deleted.`,
+        title: "Kelas Dihapus",
+        description: `Kelas "${selectedClass.name}" telah dihapus.`,
       });
     }
     setIsAlertOpen(false);
@@ -91,10 +91,10 @@ export default function ClassesPage() {
   };
   
   const handleEditClick = (cls: Class) => {
-    console.log("Editing class:", cls.id);
+    console.log("Mengubah kelas:", cls.id);
      toast({
-        title: "Edit Action",
-        description: `Editing "${cls.name}". (UI not implemented)`,
+        title: "Aksi Ubah",
+        description: `Mengubah "${cls.name}". (UI belum diimplementasikan)`,
       });
   };
 
@@ -103,13 +103,13 @@ export default function ClassesPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Class Management</CardTitle>
-            <CardDescription>View and manage all classes.</CardDescription>
+            <CardTitle>Manajemen Kelas</CardTitle>
+            <CardDescription>Lihat dan kelola semua kelas.</CardDescription>
           </div>
           <DialogTrigger asChild>
             <Button onClick={() => setOpen(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Class
+              Tambah Kelas
             </Button>
           </DialogTrigger>
         </CardHeader>
@@ -117,10 +117,10 @@ export default function ClassesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Class Name</TableHead>
+                <TableHead>Nama Kelas</TableHead>
                 <TableHead>Wali Kelas</TableHead>
-                <TableHead>Number of Students</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Jumlah Siswa</TableHead>
+                <TableHead className="text-right">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -135,16 +135,16 @@ export default function ClassesPage() {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
+                            <span className="sr-only">Buka menu</span>
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => handleEditClick(cls)}>
-                            Edit
+                            Ubah
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDeleteClick(cls)}>
-                            Delete
+                            Hapus
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -157,7 +157,7 @@ export default function ClassesPage() {
         </CardContent>
          <CardFooter className="flex items-center justify-between pt-6">
           <div className="text-sm text-muted-foreground">
-            Showing page {currentPage} of {totalPages}
+            Halaman {currentPage} dari {totalPages}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -166,7 +166,7 @@ export default function ClassesPage() {
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
-              Previous
+              Sebelumnya
             </Button>
             <Button
               variant="outline"
@@ -174,7 +174,7 @@ export default function ClassesPage() {
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
-              Next
+              Berikutnya
             </Button>
           </div>
         </CardFooter>
@@ -182,9 +182,9 @@ export default function ClassesPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Class</DialogTitle>
+            <DialogTitle>Tambah Kelas Baru</DialogTitle>
             <DialogDescription>
-              Fill out the form below to create a new class.
+              Isi formulir di bawah ini untuk membuat kelas baru.
             </DialogDescription>
           </DialogHeader>
           <ClassForm onSuccess={handleSuccess} />
@@ -193,15 +193,15 @@ export default function ClassesPage() {
        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Apakah Anda benar-benar yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the class
+              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus kelas secara permanen
               "{selectedClass?.name}".
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete}>Continue</AlertDialogAction>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>Lanjutkan</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

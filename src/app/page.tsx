@@ -19,7 +19,7 @@ export default function LoginPage() {
       <div className="hidden bg-muted lg:block">
         <Image
           src="https://images.unsplash.com/photo-1529390079861-591de354faf5?q=80&w=2070&auto=format&fit=crop"
-          alt="Children in a classroom"
+          alt="Anak-anak di dalam kelas"
           width="1920"
           height="1080"
           className="h-full w-full object-cover dark:brightness-[0.7]"
@@ -32,9 +32,9 @@ export default function LoginPage() {
              <div className="mb-4 flex justify-center">
               <AppLogo className="h-12 w-12 text-primary" />
             </div>
-            <h1 className="text-3xl font-bold">ScanAttend</h1>
+            <h1 className="text-3xl font-bold">Absensi Sekolah</h1>
             <p className="text-balance text-muted-foreground">
-              Admin Login for Attendance Management
+              Login Admin untuk Manajemen Absensi
             </p>
           </div>
           <form className="grid gap-4">
@@ -43,9 +43,9 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@school.com"
+                placeholder="admin@sekolah.com"
                 required
-                defaultValue="admin@school.com"
+                defaultValue="admin@sekolah.com"
               />
             </div>
             <div className="grid gap-2">
@@ -55,13 +55,13 @@ export default function LoginPage() {
                   href="#"
                   className="ml-auto inline-block text-sm underline"
                 >
-                  Forgot your password?
+                  Lupa password?
                 </Link>
               </div>
               <Input id="password" type="password" required defaultValue="password" />
             </div>
             <Button asChild type="submit" className="w-full">
-              <Link href="/dashboard">Log In</Link>
+              <Link href="/dashboard">Masuk</Link>
             </Button>
           </form>
         </div>

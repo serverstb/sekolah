@@ -29,7 +29,7 @@ export default function DashboardLayout({
             <Button variant="ghost" className="h-10 w-full justify-start px-2 text-lg font-semibold tracking-tight" asChild>
               <Link href="/dashboard">
                 <AppLogo className="mr-2 h-6 w-6" />
-                ScanAttend
+                Absensi Sekolah
               </Link>
             </Button>
           </SidebarHeader>

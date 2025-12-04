@@ -29,7 +29,7 @@ export function UserNav() {
           <div className="flex flex-col items-start truncate">
             <span className="text-sm font-medium">Admin User</span>
             <span className="text-xs text-muted-foreground">
-              admin@school.com
+              admin@sekolah.com
             </span>
           </div>
         </Button>
@@ -39,7 +39,7 @@ export function UserNav() {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">Admin User</p>
             <p className="text-xs leading-none text-muted-foreground">
-              admin@school.com
+              admin@sekolah.com
             </p>
           </div>
         </DropdownMenuLabel>
@@ -47,18 +47,18 @@ export function UserNav() {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
+            <span>Profil</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+            <span>Pengaturan</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/">
             <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
+            <span>Keluar</span>
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

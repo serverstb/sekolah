@@ -17,10 +17,10 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  previousSchool: z.string().min(3, "Previous school is required."),
-  parentName: z.string().min(2, "Parent name is required."),
-  contact: z.string().min(10, "Contact number is required."),
+  name: z.string().min(2, "Nama harus memiliki minimal 2 karakter."),
+  previousSchool: z.string().min(3, "Sekolah asal harus diisi."),
+  parentName: z.string().min(2, "Nama orang tua harus diisi."),
+  contact: z.string().min(10, "Nomor kontak harus diisi."),
 });
 
 type AdmissionFormValues = z.infer<typeof formSchema>;
@@ -42,10 +42,10 @@ export function AdmissionForm({ onSuccess }: AdmissionFormProps) {
   });
 
   const onSubmit = (values: AdmissionFormValues) => {
-    console.log("New Applicant Data:", values);
+    console.log("Data Pendaftar Baru:", values);
     toast({
-        title: "Applicant Added",
-        description: `${values.name} has been successfully registered.`,
+        title: "Pendaftar Ditambahkan",
+        description: `${values.name} telah berhasil terdaftar.`,
     });
     onSuccess();
   };
@@ -58,9 +58,9 @@ export function AdmissionForm({ onSuccess }: AdmissionFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Applicant Name</FormLabel>
+              <FormLabel>Nama Pendaftar</FormLabel>
               <FormControl>
-                <Input placeholder="Enter applicant's full name" {...field} />
+                <Input placeholder="Masukkan nama lengkap pendaftar" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -71,9 +71,9 @@ export function AdmissionForm({ onSuccess }: AdmissionFormProps) {
           name="previousSchool"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Previous School</FormLabel>
+              <FormLabel>Sekolah Asal</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., SMPN 1 Jakarta" {...field} />
+                <Input placeholder="contoh, SMPN 1 Jakarta" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -84,9 +84,9 @@ export function AdmissionForm({ onSuccess }: AdmissionFormProps) {
           name="parentName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Parent's Name</FormLabel>
+              <FormLabel>Nama Orang Tua</FormLabel>
               <FormControl>
-                <Input placeholder="Enter parent's name" {...field} />
+                <Input placeholder="Masukkan nama orang tua" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -97,16 +97,16 @@ export function AdmissionForm({ onSuccess }: AdmissionFormProps) {
           name="contact"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contact Number</FormLabel>
+              <FormLabel>Nomor Kontak</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., 081234567890" {...field} />
+                <Input placeholder="contoh, 081234567890" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="flex justify-end pt-4">
-          <Button type="submit">Add Applicant</Button>
+          <Button type="submit">Tambah Pendaftar</Button>
         </div>
       </form>
     </Form>

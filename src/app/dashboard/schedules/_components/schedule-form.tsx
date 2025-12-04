@@ -25,14 +25,22 @@ import { classes, subjects, teachers, type DayOfWeek } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 
 const daysOfWeek: DayOfWeek[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const daysOfWeekIndonesian: { [key in DayOfWeek]: string } = {
+    Monday: "Senin",
+    Tuesday: "Selasa",
+    Wednesday: "Rabu",
+    Thursday: "Kamis",
+    Friday: "Jumat",
+};
+
 
 const formSchema = z.object({
-  classId: z.string().nonempty("Please select a class."),
-  subjectId: z.string().nonempty("Please select a subject."),
-  teacherId: z.string().nonempty("Please select a teacher."),
-  day: z.string().nonempty("Please select a day."),
-  startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:mm)."),
-  endTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:mm)."),
+  classId: z.string().nonempty("Silakan pilih kelas."),
+  subjectId: z.string().nonempty("Silakan pilih mata pelajaran."),
+  teacherId: z.string().nonempty("Silakan pilih guru."),
+  day: z.string().nonempty("Silakan pilih hari."),
+  startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Format waktu tidak valid (HH:mm)."),
+  endTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Format waktu tidak valid (HH:mm)."),
 });
 
 type ScheduleFormValues = z.infer<typeof formSchema>;
@@ -56,10 +64,10 @@ export function ScheduleForm({ onSuccess }: ScheduleFormProps) {
   });
 
   const onSubmit = (values: ScheduleFormValues) => {
-    console.log("New Schedule Data:", values);
+    console.log("Data Jadwal Baru:", values);
     toast({
-      title: "Schedule Added",
-      description: `New schedule has been successfully created.`,
+      title: "Jadwal Ditambahkan",
+      description: `Jadwal baru telah berhasil dibuat.`,
     });
     onSuccess();
   };
@@ -72,11 +80,11 @@ export function ScheduleForm({ onSuccess }: ScheduleFormProps) {
           name="classId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Class</FormLabel>
+              <FormLabel>Kelas</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a class" />
+                    <SelectValue placeholder="Pilih kelas" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -96,11 +104,11 @@ export function ScheduleForm({ onSuccess }: ScheduleFormProps) {
           name="subjectId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Subject</FormLabel>
+              <FormLabel>Mata Pelajaran</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a subject" />
+                    <SelectValue placeholder="Pilih mata pelajaran" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -120,11 +128,11 @@ export function ScheduleForm({ onSuccess }: ScheduleFormProps) {
           name="teacherId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Teacher</FormLabel>
+              <FormLabel>Guru</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a teacher" />
+                    <SelectValue placeholder="Pilih guru" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -144,17 +152,17 @@ export function ScheduleForm({ onSuccess }: ScheduleFormProps) {
           name="day"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Day</FormLabel>
+              <FormLabel>Hari</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a day" />
+                    <SelectValue placeholder="Pilih hari" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {daysOfWeek.map((day) => (
                     <SelectItem key={day} value={day}>
-                      {day}
+                      {daysOfWeekIndonesian[day]}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -169,7 +177,7 @@ export function ScheduleForm({ onSuccess }: ScheduleFormProps) {
             name="startTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Start Time</FormLabel>
+                <FormLabel>Waktu Mulai</FormLabel>
                 <FormControl>
                   <Input type="time" {...field} />
                 </FormControl>
@@ -182,7 +190,7 @@ export function ScheduleForm({ onSuccess }: ScheduleFormProps) {
             name="endTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>End Time</FormLabel>
+                <FormLabel>Waktu Selesai</FormLabel>
                 <FormControl>
                   <Input type="time" {...field} />
                 </FormControl>
@@ -192,7 +200,7 @@ export function ScheduleForm({ onSuccess }: ScheduleFormProps) {
           />
         </div>
         <div className="flex justify-end pt-4">
-          <Button type="submit">Add Schedule</Button>
+          <Button type="submit">Tambah Jadwal</Button>
         </div>
       </form>
     </Form>

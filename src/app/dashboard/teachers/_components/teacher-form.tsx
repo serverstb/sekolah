@@ -20,11 +20,11 @@ import { classes, subjects } from "@/lib/data";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  nip: z.string().regex(/^\d+$/, "NIP must be a number.").min(10, "NIP must be at least 10 digits."),
-  subjectId: z.string().nonempty("Please select a subject."),
+  name: z.string().min(2, "Nama minimal harus 2 karakter."),
+  nip: z.string().regex(/^\d+$/, "NIP harus berupa angka.").min(10, "NIP minimal harus 10 digit."),
+  subjectId: z.string().nonempty("Silakan pilih mata pelajaran."),
   taughtClassIds: z.array(z.string()).refine(value => value.some(item => item), {
-    message: "You have to select at least one class.",
+    message: "Anda harus memilih setidaknya satu kelas.",
   }),
 });
 
@@ -47,10 +47,10 @@ export function TeacherForm({ onSuccess }: TeacherFormProps) {
   });
 
   const onSubmit = (values: TeacherFormValues) => {
-    console.log("New Teacher Data:", values);
+    console.log("Data Guru Baru:", values);
     toast({
-        title: "Teacher Added",
-        description: `${values.name} has been successfully registered.`,
+        title: "Guru Ditambahkan",
+        description: `${values.name} telah berhasil terdaftar.`,
     });
     onSuccess();
   };
@@ -63,9 +63,9 @@ export function TeacherForm({ onSuccess }: TeacherFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full Name</FormLabel>
+              <FormLabel>Nama Lengkap</FormLabel>
               <FormControl>
-                <Input placeholder="Enter teacher's full name" {...field} />
+                <Input placeholder="Masukkan nama lengkap guru" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,7 +78,7 @@ export function TeacherForm({ onSuccess }: TeacherFormProps) {
             <FormItem>
               <FormLabel>NIP</FormLabel>
               <FormControl>
-                <Input placeholder="Enter teacher's NIP" {...field} />
+                <Input placeholder="Masukkan NIP guru" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -89,11 +89,11 @@ export function TeacherForm({ onSuccess }: TeacherFormProps) {
           name="subjectId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Subject</FormLabel>
+              <FormLabel>Mata Pelajaran</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a subject" />
+                    <SelectValue placeholder="Pilih mata pelajaran" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -114,7 +114,7 @@ export function TeacherForm({ onSuccess }: TeacherFormProps) {
           render={() => (
             <FormItem>
               <div className="mb-4">
-                <FormLabel className="text-base">Classes Taught</FormLabel>
+                <FormLabel className="text-base">Kelas yang Diajar</FormLabel>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 {classes.map((item) => (
@@ -156,7 +156,7 @@ export function TeacherForm({ onSuccess }: TeacherFormProps) {
           )}
         />
         <div className="flex justify-end">
-          <Button type="submit">Add Teacher</Button>
+          <Button type="submit">Tambah Guru</Button>
         </div>
       </form>
     </Form>

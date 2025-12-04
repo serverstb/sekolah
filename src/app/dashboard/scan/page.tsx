@@ -26,15 +26,15 @@ export default function ScanPage() {
         setScannedStudent(randomStudent);
         setStatus("success");
         toast({
-          title: "Attendance Recorded",
-          description: `${randomStudent.name} has been marked as present.`,
+          title: "Absensi Tercatat",
+          description: `${randomStudent.name} telah ditandai sebagai hadir.`,
         });
       } else {
         setStatus("error");
         toast({
           variant: "destructive",
-          title: "Scan Failed",
-          description: "Could not read barcode. Please try again.",
+          title: "Gagal Memindai",
+          description: "Gagal membaca barcode. Silakan coba lagi.",
         });
       }
     }, 1500); // Simulate scanning time
@@ -58,7 +58,7 @@ export default function ScanPage() {
         return (
           <div className="text-center text-green-600 flex flex-col items-center gap-4">
             <CheckCircle className="w-16 h-16" />
-            <h3 className="text-xl font-semibold">Scan Successful</h3>
+            <h3 className="text-xl font-semibold">Pindai Berhasil</h3>
             {scannedStudent && (
               <div className="flex flex-col items-center gap-2">
                  <Avatar className="h-20 w-20">
@@ -66,7 +66,7 @@ export default function ScanPage() {
                   <AvatarFallback>{scannedStudent.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <p className="text-lg font-medium text-foreground">{scannedStudent.name}</p>
-                <p className="text-sm text-muted-foreground">ID: {scannedStudent.id} | Class: {studentClass?.name || 'N/A'}</p>
+                <p className="text-sm text-muted-foreground">ID: {scannedStudent.id} | Kelas: {studentClass?.name || 'N/A'}</p>
               </div>
             )}
           </div>
@@ -75,24 +75,24 @@ export default function ScanPage() {
         return (
           <div className="text-center text-destructive flex flex-col items-center gap-4">
             <XCircle className="w-16 h-16" />
-            <h3 className="text-xl font-semibold">Invalid Barcode</h3>
-            <p className="text-muted-foreground">Student not found or barcode unreadable.</p>
+            <h3 className="text-xl font-semibold">Barcode Tidak Valid</h3>
+            <p className="text-muted-foreground">Siswa tidak ditemukan atau barcode tidak terbaca.</p>
           </div>
         );
       case "scanning":
         return (
            <div className="text-center text-primary flex flex-col items-center gap-4">
             <ScanLine className="w-16 h-16 animate-pulse" />
-            <h3 className="text-xl font-semibold">Scanning...</h3>
-            <p className="text-muted-foreground">Please hold the barcode steady.</p>
+            <h3 className="text-xl font-semibold">Memindai...</h3>
+            <p className="text-muted-foreground">Harap tahan barcode dengan stabil.</p>
           </div>
         );
       default: // idle
         return (
           <div className="text-center text-muted-foreground flex flex-col items-center gap-4">
             <AlertTriangle className="w-16 h-16" />
-            <h3 className="text-xl font-semibold text-foreground">Ready to Scan</h3>
-            <p>Press the button below to start the camera.</p>
+            <h3 className="text-xl font-semibold text-foreground">Siap Memindai</h3>
+            <p>Tekan tombol di bawah untuk memulai kamera.</p>
           </div>
         );
     }
@@ -102,7 +102,7 @@ export default function ScanPage() {
     <div className="flex flex-col items-center justify-center gap-6">
       <Card className="w-full max-w-lg shadow-lg">
         <CardHeader>
-          <CardTitle className="text-center text-2xl">Scan Student Barcode</CardTitle>
+          <CardTitle className="text-center text-2xl">Pindai Barcode Siswa</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-6">
           <div className="relative w-full aspect-square max-w-sm overflow-hidden rounded-lg border-4 border-dashed bg-muted flex items-center justify-center">
@@ -121,7 +121,7 @@ export default function ScanPage() {
             className="w-full max-w-sm"
           >
             <ScanLine className="mr-2 h-5 w-5" />
-            {status === 'scanning' ? 'Scanning...' : 'Start Scan'}
+            {status === 'scanning' ? 'Memindai...' : 'Mulai Pindai'}
           </Button>
         </CardContent>
       </Card>

@@ -98,15 +98,15 @@ export default function TeacherJournalPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Teaching Journal</CardTitle>
+              <CardTitle>Jurnal Mengajar</CardTitle>
               <CardDescription>
-                A log of all teaching activities.
+                Catatan semua aktivitas mengajar.
               </CardDescription>
             </div>
              <DialogTrigger asChild>
                 <Button onClick={() => setOpen(true)}>
                   <PlusCircle className="mr-2 h-4 w-4" />
-                  Add Entry
+                  Tambah Entri
                 </Button>
             </DialogTrigger>
           </CardHeader>
@@ -114,10 +114,10 @@ export default function TeacherJournalPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Class</TableHead>
-                  <TableHead>Subject Matter</TableHead>
-                  <TableHead>Notes</TableHead>
+                  <TableHead>Tanggal</TableHead>
+                  <TableHead>Kelas</TableHead>
+                  <TableHead>Materi Pelajaran</TableHead>
+                  <TableHead>Catatan</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -138,7 +138,7 @@ export default function TeacherJournalPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={4} className="h-24 text-center">
-                      No journal entries found.
+                      Belum ada entri jurnal.
                     </TableCell>
                   </TableRow>
                 )}
@@ -151,9 +151,9 @@ export default function TeacherJournalPage() {
        <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Journal Entry</DialogTitle>
+            <DialogTitle>Tambah Entri Jurnal Baru</DialogTitle>
             <DialogDescription>
-              Fill out the form below to add a new teaching journal entry for {teacher.name}.
+              Isi formulir di bawah ini untuk menambahkan entri jurnal mengajar baru untuk {teacher.name}.
             </DialogDescription>
           </DialogHeader>
           <JournalForm teacher={teacher} taughtClasses={taughtClasses} onSuccess={handleSuccess} />
