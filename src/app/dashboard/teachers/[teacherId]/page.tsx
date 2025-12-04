@@ -66,6 +66,11 @@ function getClassById(id: string) {
   return classes.find((c) => c.id === id);
 }
 
+function getSubjectById(id: string) {
+    return subjects.find(s => s.id === id);
+}
+
+
 const ITEMS_PER_PAGE = 5;
 
 export default function TeacherJournalPage() {
@@ -86,7 +91,7 @@ export default function TeacherJournalPage() {
     notFound();
   }
   
-  const subject = subjects.find(s => s.id === teacher.subjectId);
+  const subject = getSubjectById(teacher.subjectId);
   const taughtClasses = classes.filter(c => teacher.taughtClassIds.includes(c.id));
   
   const journals = useMemo(() => {
@@ -97,7 +102,7 @@ export default function TeacherJournalPage() {
 
   const filteredJournals = useMemo(() => {
     return journals.filter(journal => 
-        journal.subjectMatter.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        journal.topic.toLowerCase().includes(searchTerm.toLowerCase()) ||
         journal.notes.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [journals, searchTerm]);
@@ -129,7 +134,7 @@ export default function TeacherJournalPage() {
       console.log("Menghapus Jurnal:", selectedJournal.id);
       toast({
         title: "Jurnal Dihapus",
-        description: `Entri jurnal untuk "${selectedJournal.subjectMatter}" telah dihapus.`,
+        description: `Entri jurnal untuk "${selectedJournal.topic}" telah dihapus.`,
       });
     }
     setIsAlertOpen(false);
@@ -170,7 +175,7 @@ export default function TeacherJournalPage() {
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input 
                         type="search"
-                        placeholder="Cari materi pelajaran..."
+                        placeholder="Cari topik pelajaran..."
                         className="pl-8"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -188,7 +193,8 @@ export default function TeacherJournalPage() {
                 <TableRow>
                   <TableHead>Tanggal</TableHead>
                   <TableHead>Kelas</TableHead>
-                  <TableHead>Materi Pelajaran</TableHead>
+                  <TableHead>Mata Pelajaran</TableHead>
+                  <TableHead>Topik Pelajaran</TableHead>
                   <TableHead>Catatan</TableHead>
                   <TableHead>Materi</TableHead>
                   <TableHead className="text-right">Aksi</TableHead>
@@ -198,12 +204,14 @@ export default function TeacherJournalPage() {
                 {paginatedJournals.length > 0 ? (
                   paginatedJournals.map((journal) => {
                     const journalClass = getClassById(journal.classId);
+                    const journalSubject = getSubjectById(journal.subjectId);
                     return (
                       <TableRow key={journal.id}>
                         <TableCell>{format(journal.date, "dd MMM yyyy")}</TableCell>
                         <TableCell>{journalClass?.name || "N/A"}</TableCell>
+                        <TableCell>{journalSubject?.name || "N/A"}</TableCell>
                         <TableCell className="font-medium">
-                          {journal.subjectMatter}
+                          {journal.topic}
                         </TableCell>
                         <TableCell>{journal.notes}</TableCell>
                         <TableCell>
@@ -239,7 +247,7 @@ export default function TeacherJournalPage() {
                   })
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} className="h-24 text-center">
+                    <TableCell colSpan={7} className="h-24 text-center">
                       {searchTerm ? "Tidak ada jurnal yang cocok dengan pencarian Anda." : "Belum ada entri jurnal."}
                     </TableCell>
                   </TableRow>
@@ -281,7 +289,7 @@ export default function TeacherJournalPage() {
               Isi formulir untuk menambahkan entri jurnal mengajar baru untuk {teacher.name}.
             </DialogDescription>
           </DialogHeader>
-          <JournalForm teacher={teacher} taughtClasses={taughtClasses} onSuccess={handleSuccess} />
+          <JournalForm teacher={teacher} subject={subject} taughtClasses={taughtClasses} onSuccess={handleSuccess} />
         </DialogContent>
       </Dialog>
 
@@ -294,7 +302,8 @@ export default function TeacherJournalPage() {
             </DialogDescription>
           </DialogHeader>
           <JournalForm 
-            teacher={teacher} 
+            teacher={teacher}
+            subject={subject}
             taughtClasses={taughtClasses} 
             onSuccess={handleSuccess}
             existingJournal={selectedJournal}
@@ -307,8 +316,8 @@ export default function TeacherJournalPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Apakah Anda benar-benar yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus entri jurnal untuk materi
-              "{selectedJournal?.subjectMatter}" secara permanen.
+              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus entri jurnal untuk topik
+              "{selectedJournal?.topic}" secara permanen.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -320,3 +329,5 @@ export default function TeacherJournalPage() {
     </>
   );
 }
+
+    

@@ -23,11 +23,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { type Teacher, type Class, type TeachingJournal } from "@/lib/data";
+import { type Teacher, type Class, type TeachingJournal, type Subject } from "@/lib/data";
 
 const formSchema = z.object({
   classId: z.string().nonempty("Silakan pilih kelas."),
-  subjectMatter: z.string().min(3, "Materi pelajaran minimal harus 3 karakter."),
+  topic: z.string().min(3, "Topik pelajaran minimal harus 3 karakter."),
   notes: z.string().optional(),
   materialFile: z.any().optional(),
 });
@@ -36,12 +36,13 @@ type JournalFormValues = z.infer<typeof formSchema>;
 
 interface JournalFormProps {
   teacher: Teacher;
+  subject: Subject | undefined;
   taughtClasses: Class[];
   onSuccess: () => void;
   existingJournal?: TeachingJournal | null;
 }
 
-export function JournalForm({ teacher, taughtClasses, onSuccess, existingJournal }: JournalFormProps) {
+export function JournalForm({ teacher, subject, taughtClasses, onSuccess, existingJournal }: JournalFormProps) {
   const { toast } = useToast();
   const isEditMode = !!existingJournal;
 
@@ -49,7 +50,7 @@ export function JournalForm({ teacher, taughtClasses, onSuccess, existingJournal
     resolver: zodResolver(formSchema),
     defaultValues: {
       classId: existingJournal?.classId || "",
-      subjectMatter: existingJournal?.subjectMatter || "",
+      topic: existingJournal?.topic || "",
       notes: existingJournal?.notes || "",
       materialFile: undefined,
     },
@@ -68,7 +69,7 @@ export function JournalForm({ teacher, taughtClasses, onSuccess, existingJournal
         description: `Entri untuk kelas ${taughtClasses.find(c => c.id === values.classId)?.name} telah diperbarui.`,
       });
     } else {
-      console.log("Entri Jurnal Baru:", { ...submissionData, teacherId: teacher.id, date: new Date() });
+      console.log("Entri Jurnal Baru:", { ...submissionData, teacherId: teacher.id, subjectId: teacher.subjectId, date: new Date() });
       toast({
         title: "Entri Jurnal Ditambahkan",
         description: `Entri baru untuk kelas ${taughtClasses.find(c => c.id === values.classId)?.name} telah disimpan.`,
@@ -106,12 +107,21 @@ export function JournalForm({ teacher, taughtClasses, onSuccess, existingJournal
             </FormItem>
           )}
         />
+        <FormItem>
+            <FormLabel>Mata Pelajaran</FormLabel>
+            <Input
+                readOnly
+                disabled
+                value={subject?.name || "Mata pelajaran tidak ditemukan"}
+                className="font-medium bg-muted"
+            />
+        </FormItem>
         <FormField
           control={form.control}
-          name="subjectMatter"
+          name="topic"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Materi Pelajaran</FormLabel>
+              <FormLabel>Topik Pelajaran</FormLabel>
               <FormControl>
                 <Input placeholder="contoh, Pengenalan Aljabar" {...field} />
               </FormControl>
@@ -160,3 +170,5 @@ export function JournalForm({ teacher, taughtClasses, onSuccess, existingJournal
     </Form>
   );
 }
+
+    
