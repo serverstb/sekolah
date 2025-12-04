@@ -68,6 +68,15 @@ export type NewStudentApplicant = {
   contact: string;
 };
 
+export type TeachingJournal = {
+  id: string;
+  teacherId: string;
+  classId: string;
+  date: Date;
+  subjectMatter: string;
+  notes: string;
+};
+
 
 const placeholderAvatars = PlaceHolderImages.filter(img => img.id.startsWith("student-avatar-"));
 const teacherPlaceHolderAvatars = PlaceHolderImages.filter(img => img.id.startsWith("teacher-avatar-"));
@@ -142,4 +151,12 @@ export const newStudentApplicants: NewStudentApplicant[] = [
   { id: "APP-002", name: "Rizky Alamsyah", previousSchool: "SMP Bintang Harapan", registrationDate: subDays(today, 3), status: "Pending", parentName: "Susanti", contact: "081234567891" },
   { id: "APP-003", name: "Putri Anggraini", previousSchool: "SMP Cipta Karya", registrationDate: subDays(today, 10), status: "Accepted", parentName: "Budiarto", contact: "081234567892" },
   { id: "APP-004", name: "Doni Saputra", previousSchool: "SMPN 5 Bandung", registrationDate: subDays(today, 15), status: "Rejected", parentName: "Sari", contact: "081234567893" },
+];
+
+export const teachingJournals: TeachingJournal[] = [
+    { id: "JNL-001", teacherId: "TCH-001", classId: "CLS-001", date: subDays(today, 1), subjectMatter: "Algebraic Expressions", notes: "Students had difficulty with factoring." },
+    { id: "JNL-002", teacherId: "TCH-001", classId: "CLS-003", date: subDays(today, 1), subjectMatter: "Linear Equations", notes: "Most students understood the concept well." },
+    { id: "JNL-003", teacherId: "TCH-002", classId: "CLS-002", date: subDays(today, 2), subjectMatter: "Newton's Laws of Motion", notes: "Practical examples helped understanding." },
+    { id: "JNL-004", teacherId: "TCH-003", classId: "CLS-001", date: subDays(today, 3), subjectMatter: "Analyzing Poetry", notes: "Discussed the meaning behind 'Hujan Bulan Juni'." },
+    { id: "JNL-005", teacherId: "TCH-004", classId: "CLS-004", date: subDays(today, 1), subjectMatter: "Introduction to HTML", notes: "Students created their first webpage." },
 ];

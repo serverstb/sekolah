@@ -20,7 +20,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { teachers, classes } from "@/lib/data";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dialog";
 import { TeacherForm } from "./_components/teacher-form";
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -79,6 +80,7 @@ export default function TeachersPage() {
                 <TableHead>NIP</TableHead>
                 <TableHead>Subject</TableHead>
                 <TableHead>Classes Taught</TableHead>
+                <TableHead className="text-right">Jurnal Mengajar</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -110,6 +112,14 @@ export default function TeachersPage() {
                         ) : null;
                       })}
                     </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/dashboard/teachers/${teacher.id}`}>
+                        <BookOpen className="mr-2 h-4 w-4" />
+                        Lihat Jurnal
+                      </Link>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
