@@ -34,7 +34,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { AdmissionForm } from "./_components/admission-form";
 import { format } from "date-fns";
@@ -93,12 +92,10 @@ export default function AdmissionsPage() {
               Kelola dan lacak pendaftaran siswa baru.
             </CardDescription>
           </div>
-          <DialogTrigger asChild>
-            <Button onClick={() => setOpen(true)}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Tambah Pendaftar
-            </Button>
-          </DialogTrigger>
+          <Button onClick={() => setOpen(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Tambah Pendaftar
+          </Button>
         </CardHeader>
         <CardContent>
           <Table>
@@ -106,6 +103,8 @@ export default function AdmissionsPage() {
               <TableRow>
                 <TableHead>Nama Pendaftar</TableHead>
                 <TableHead>Sekolah Asal</TableHead>
+                <TableHead>Jenis Kelamin</TableHead>
+                <TableHead>Alamat</TableHead>
                 <TableHead>Tanggal Registrasi</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Aksi</TableHead>
@@ -116,6 +115,8 @@ export default function AdmissionsPage() {
                 <TableRow key={applicant.id}>
                   <TableCell className="font-medium">{applicant.name}</TableCell>
                   <TableCell>{applicant.previousSchool}</TableCell>
+                  <TableCell>{applicant.gender}</TableCell>
+                  <TableCell className="max-w-[200px] truncate">{applicant.address}</TableCell>
                   <TableCell>
                     {format(applicant.registrationDate, "dd MMM yyyy")}
                   </TableCell>
@@ -174,7 +175,7 @@ export default function AdmissionsPage() {
         </CardFooter>
       </Card>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[480px]">
           <DialogHeader>
             <DialogTitle>Tambah Pendaftar Baru</DialogTitle>
             <DialogDescription>
@@ -187,3 +188,5 @@ export default function AdmissionsPage() {
     </>
   );
 }
+
+    
