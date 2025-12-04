@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { format, getYear, getMonth, startOfMonth, endOfMonth } from "date-fns";
+import { format, getYear, getMonth, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
 import {
   Card,
   CardContent,
@@ -28,6 +28,9 @@ import {
   employees,
   classes,
   type AttendanceRecord,
+  type Student,
+  type Teacher,
+  type Employee,
 } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -38,6 +41,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+
 
 function getStudentById(id: string) {
   return students.find((s) => s.id === id);
@@ -74,11 +80,63 @@ const months = [
   { value: "5", label: "June" },
   { value: "6", label: "July" },
   { value: "7", label: "August" },
-  { value: "8", label: "September" },
+  { value: "8",label: "September" },
   { value: "9", label: "October" },
   { value: "10", label: "November" },
   { value: "11", label: "December" },
 ];
+
+const chartConfig = {
+  present: {
+    label: "Present",
+    color: "hsl(var(--chart-2))",
+  },
+  late: {
+    label: "Late",
+    color: "hsl(var(--chart-4))",
+  },
+  absent: {
+    label: "Absent",
+    color: "hsl(var(--chart-5))",
+  },
+};
+
+
+type AttendanceChartData = {
+  date: string;
+  present: number;
+  late: number;
+  absent: number;
+};
+
+interface AttendanceChartProps {
+  data: AttendanceChartData[];
+}
+
+function AttendanceChart({ data }: AttendanceChartProps) {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full mb-8">
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={data} margin={{ top: 20, right: 20, bottom: 5, left: 0 }}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="date"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.substring(0, 5)} // "Mon 01" -> "Mon"
+          />
+          <YAxis />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <Legend />
+          <Bar dataKey="present" fill="var(--color-present)" radius={4} />
+          <Bar dataKey="late" fill="var(--color-late)" radius={4} />
+          <Bar dataKey="absent" fill="var(--color-absent)" radius={4} />
+        </BarChart>
+      </ResponsiveContainer>
+    </ChartContainer>
+  );
+}
 
 export default function ReportPage() {
   const [classId, setClassId] = useState("all");
@@ -98,6 +156,32 @@ export default function ReportPage() {
     const to = endOfMonth(new Date(year, month));
     return { from, to };
   }, [selectedYear, selectedMonth, isClient]);
+
+  const getChartData = <T extends {id: string}, R extends {timestamp: Date; status: "Present" | "Late" | "Absent"}>(
+    allPersons: T[],
+    records: R[],
+    personIdKey: keyof R
+  ): AttendanceChartData[] => {
+    if (!dateRange) return [];
+
+    const daysInMonth = eachDayOfInterval({ start: dateRange.from, end: dateRange.to });
+
+    return daysInMonth.map(day => {
+      const dailyRecords = records.filter(record => isSameDay(record.timestamp, day));
+      const present = dailyRecords.filter(r => r.status === "Present").length;
+      const late = dailyRecords.filter(r => r.status === "Late").length;
+      
+      const attendedIds = new Set(dailyRecords.map(r => r[personIdKey]));
+      const absent = allPersons.filter(p => !attendedIds.has(p.id)).length;
+
+      return {
+        date: format(day, "dd/MM"),
+        present,
+        late,
+        absent,
+      };
+    });
+  };
 
   const filteredStudentRecords = useMemo(() => {
     if (!dateRange) return [];
@@ -136,6 +220,17 @@ export default function ReportPage() {
       return isDateMatch;
     });
   }, [dateRange]);
+
+  const studentChartData = useMemo(() => {
+    let relevantStudents = students;
+    if (classId !== 'all') {
+      relevantStudents = students.filter(s => s.classId === classId);
+    }
+    return getChartData(relevantStudents, filteredStudentRecords, 'studentId');
+  }, [filteredStudentRecords, students, classId, dateRange]);
+  
+  const teacherChartData = useMemo(() => getChartData(teachers, filteredTeacherRecords, 'teacherId'), [filteredTeacherRecords, dateRange]);
+  const employeeChartData = useMemo(() => getChartData(employees, filteredEmployeeRecords, 'employeeId'), [filteredEmployeeRecords, dateRange]);
 
   if (!isClient) {
     return null; // or a loading skeleton
@@ -197,7 +292,7 @@ export default function ReportPage() {
 
           <TabsContent value="students" className="mt-6">
             <div className="mb-6 flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2">
+               <div className="flex items-center gap-2">
                 <label htmlFor="class-filter" className="text-sm font-medium">
                   Class:
                 </label>
@@ -216,6 +311,7 @@ export default function ReportPage() {
                 </Select>
               </div>
             </div>
+            <AttendanceChart data={studentChartData} />
             <Table>
               <TableHeader>
                 <TableRow>
@@ -281,7 +377,8 @@ export default function ReportPage() {
           </TabsContent>
 
           <TabsContent value="teachers" className="mt-6">
-             <Table>
+            <AttendanceChart data={teacherChartData} />
+            <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Teacher</TableHead>
@@ -339,7 +436,8 @@ export default function ReportPage() {
           </TabsContent>
           
           <TabsContent value="employees" className="mt-6">
-             <Table>
+            <AttendanceChart data={employeeChartData} />
+            <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Employee</TableHead>
@@ -402,3 +500,5 @@ export default function ReportPage() {
     </Card>
   );
 }
+
+    
