@@ -1,6 +1,17 @@
 -- Skema Database Sekolah (MySQL)
--- Desain ini mencakup semua entitas yang didefinisikan dalam backend.json
--- dan dirancang untuk digunakan dengan database relasional seperti MySQL.
+-- Versi: 1.0
+
+-- Menghapus tabel jika sudah ada untuk setup ulang yang bersih
+DROP TABLE IF EXISTS `attendance_records`;
+DROP TABLE IF EXISTS `teaching_journals`;
+DROP TABLE IF EXISTS `schedules`;
+DROP TABLE IF EXISTS `new_student_applicants`;
+DROP TABLE IF EXISTS `students`;
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `teachers`;
+DROP TABLE IF EXISTS `classes`;
+DROP TABLE IF EXISTS `subjects`;
+DROP TABLE IF EXISTS `employees`;
 
 -- Tabel untuk Mata Pelajaran
 CREATE TABLE `subjects` (
@@ -19,7 +30,7 @@ CREATE TABLE `teachers` (
   `avatarHint` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nip` (`nip`),
-  FOREIGN KEY (`subjectId`) REFERENCES `subjects`(`id`) ON DELETE RESTRICT
+  FOREIGN KEY (`subjectId`) REFERENCES `subjects`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabel untuk Kelas
@@ -29,11 +40,11 @@ CREATE TABLE `classes` (
   `walikelasId` VARCHAR(255) NOT NULL,
   `studentCount` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`walikelasId`) REFERENCES `teachers`(`id`) ON DELETE RESTRICT
+  FOREIGN KEY (`walikelasId`) REFERENCES `teachers`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabel pivot untuk hubungan many-to-many antara Guru dan Kelas yang Diajar
-CREATE TABLE `teacher_classes` (
+-- Tabel 'taught_classes' untuk relasi many-to-many antara guru dan kelas
+CREATE TABLE `taught_classes` (
   `teacherId` VARCHAR(255) NOT NULL,
   `classId` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`teacherId`, `classId`),
@@ -52,17 +63,7 @@ CREATE TABLE `students` (
   FOREIGN KEY (`classId`) REFERENCES `classes`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabel untuk Karyawan
-CREATE TABLE `employees` (
-  `id` VARCHAR(255) NOT NULL,
-  `name` VARCHAR(255) NOT NULL,
-  `role` VARCHAR(255) NOT NULL,
-  `avatarUrl` VARCHAR(255) NULL,
-  `avatarHint` VARCHAR(255) NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Tabel untuk Pendaftar Siswa Baru
+-- Tabel untuk pendaftar siswa baru
 CREATE TABLE `new_student_applicants` (
   `id` VARCHAR(255) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -79,19 +80,14 @@ CREATE TABLE `new_student_applicants` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabel untuk Jadwal Pelajaran
-CREATE TABLE `schedules` (
+-- Tabel untuk Catatan Absensi (untuk siswa)
+CREATE TABLE `attendance_records` (
   `id` VARCHAR(255) NOT NULL,
-  `classId` VARCHAR(255) NOT NULL,
-  `subjectId` VARCHAR(255) NOT NULL,
-  `teacherId` VARCHAR(255) NOT NULL,
-  `day` ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') NOT NULL,
-  `startTime` TIME NOT NULL,
-  `endTime` TIME NOT NULL,
+  `studentId` VARCHAR(255) NOT NULL,
+  `timestamp` DATETIME NOT NULL,
+  `status` ENUM('Present', 'Late', 'Absent') NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`classId`) REFERENCES `classes`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`subjectId`) REFERENCES `subjects`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`teacherId`) REFERENCES `teachers`(`id`) ON DELETE CASCADE
+  FOREIGN KEY (`studentId`) REFERENCES `students`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabel untuk Jurnal Mengajar
@@ -110,24 +106,29 @@ CREATE TABLE `teaching_journals` (
   FOREIGN KEY (`subjectId`) REFERENCES `subjects`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabel untuk Catatan Absensi (menggabungkan siswa, guru, karyawan)
-CREATE TABLE `attendance_records` (
+-- Tabel untuk Jadwal Pelajaran
+CREATE TABLE `schedules` (
   `id` VARCHAR(255) NOT NULL,
-  `studentId` VARCHAR(255) NULL,
-  `teacherId` VARCHAR(255) NULL,
-  `employeeId` VARCHAR(255) NULL,
-  `timestamp` DATETIME NOT NULL,
-  `status` ENUM('Present', 'Late', 'Absent') NOT NULL,
+  `classId` VARCHAR(255) NOT NULL,
+  `subjectId` VARCHAR(255) NOT NULL,
+  `teacherId` VARCHAR(255) NOT NULL,
+  `day` ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') NOT NULL,
+  `startTime` TIME NOT NULL,
+  `endTime` TIME NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`studentId`) REFERENCES `students`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`teacherId`) REFERENCES `teachers`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`employeeId`) REFERENCES `employees`(`id`) ON DELETE CASCADE,
-  -- Memastikan hanya satu jenis ID yang diisi per baris
-  CONSTRAINT `chk_person_type` CHECK (
-    (`studentId` IS NOT NULL AND `teacherId` IS NULL AND `employeeId` IS NULL) OR
-    (`studentId` IS NULL AND `teacherId` IS NOT NULL AND `employeeId` IS NULL) OR
-    (`studentId` IS NULL AND `teacherId` IS NULL AND `employeeId` IS NOT NULL)
-  )
+  FOREIGN KEY (`classId`) REFERENCES `classes`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`subjectId`) REFERENCES `subjects`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`teacherId`) REFERENCES `teachers`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabel untuk Karyawan (non-guru)
+CREATE TABLE `employees` (
+  `id` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `role` VARCHAR(255) NOT NULL,
+  `avatarUrl` VARCHAR(255) NULL,
+  `avatarHint` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabel untuk pengguna sistem (admin, guru)
@@ -142,7 +143,9 @@ CREATE TABLE `users` (
   FOREIGN KEY (`teacherId`) REFERENCES `teachers`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Menambahkan data awal (seeder) untuk pengguna admin
--- Passwordnya adalah 'password' (di-hash menggunakan bcrypt)
+-- === Data Awal (Seeder) ===
+
+-- Menambahkan pengguna admin
+-- Password untuk akun admin adalah 'password'
 INSERT INTO `users` (`id`, `email`, `password`, `role`, `teacherId`) VALUES
-('user-admin-001', 'admin@sekolah.com', '$2a$10$9Y.K/g6./y.Zk.vOEPLfA.HqX1Qc8LhGg2jXJm8.u5Yd.3.Qc8lza', 'admin', NULL);
+('user-admin-01', 'admin@sekolah.com', '$2a$10$w2G.E2.b1nFgaADeM8k8A.t6sHkLVkS0g5zrj20xH14.eW94p.M5W', 'admin', NULL);
