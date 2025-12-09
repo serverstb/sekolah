@@ -98,12 +98,6 @@ export default function LoginPage() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                <Link
-                  href="#"
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  Lupa password?
-                </Link>
               </div>
               <Input 
                 id="password" 
@@ -117,6 +111,12 @@ export default function LoginPage() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Memproses...' : 'Masuk'}
             </Button>
+             <div className="mt-4 text-center text-sm">
+              Belum punya akun?{" "}
+              <Link href="/register" className="underline">
+                Daftar
+              </Link>
+            </div>
           </form>
         </div>
       </div>
