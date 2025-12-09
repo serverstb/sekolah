@@ -79,7 +79,7 @@ export default function LoginPage() {
             </div>
             <h1 className="text-3xl font-bold">Sekolah</h1>
             <p className="text-balance text-muted-foreground">
-              Login untuk Manajemen Absensi Sekolah
+              Login untuk Manajemen Sekolah
             </p>
           </div>
           <form className="grid gap-4" onSubmit={handleSubmit}>
