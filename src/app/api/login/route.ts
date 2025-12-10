@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import db from '@/lib/db';
@@ -10,8 +11,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Email dan password harus diisi.' }, { status: 400 });
     }
 
+    // Mengambil hash password langsung dari kolom 'password'
     const [rows]: any = await db.execute(
-      'SELECT id, email, password as passwordHash, role, teacherId FROM users WHERE email = ?',
+      'SELECT id, email, password, role, teacherId FROM users WHERE email = ?',
       [email]
     );
 
@@ -21,13 +23,15 @@ export async function POST(req: NextRequest) {
 
     const user = rows[0];
     
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    // Membandingkan password yang diberikan dengan hash yang ada di database
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       return NextResponse.json({ message: 'Email atau password salah.' }, { status: 401 });
     }
     
-    const { passwordHash, ...userWithoutPassword } = user;
+    // Menghapus password dari objek user sebelum mengirimkannya kembali
+    const { password: userPassword, ...userWithoutPassword } = user;
 
     return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
 

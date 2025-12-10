@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ScanLine, Users, UserSquare, School, BookText, UserPlus, Library, Calendar } from "lucide-react";
+import { LayoutDashboard, ScanLine, Users, UserSquare, School, BookText, UserPlus, Library, Calendar, Shield } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuItem,
@@ -55,6 +55,11 @@ const navItems = [
     href: "/dashboard/report",
     label: "Laporan Absensi",
     icon: BookText,
+  },
+  {
+    href: "/dashboard/users",
+    label: "Pengguna",
+    icon: Shield,
   },
 ];
 
