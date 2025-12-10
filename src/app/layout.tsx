@@ -3,7 +3,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "Absensi Sekolah",
+  title: "Manajemen Sekolah",
   description: "Sistem absensi modern untuk sekolah.",
 };
 
