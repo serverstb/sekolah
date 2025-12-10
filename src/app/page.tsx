@@ -63,7 +63,7 @@ export default function LoginPage() {
     <div className="w-full lg:grid lg:min-h-[100vh] lg:grid-cols-2 xl:min-h-[100vh]">
       <div className="hidden bg-muted lg:block">
         <Image
-          src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=2070&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=2086&auto=format&fit=crop"
           alt="Gedung sekolah"
           width="1920"
           height="1080"
