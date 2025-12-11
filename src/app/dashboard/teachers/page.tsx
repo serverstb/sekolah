@@ -72,7 +72,8 @@ export default function TeachersPage() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [open, setOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -109,7 +110,7 @@ export default function TeachersPage() {
 
   useEffect(() => {
     fetchData();
-  }, [toast]);
+  }, []);
 
   const totalPages = Math.ceil(teachers.length / ITEMS_PER_PAGE);
 
@@ -120,8 +121,14 @@ export default function TeachersPage() {
   }, [currentPage, teachers]);
 
   const handleSuccess = () => {
-    setOpen(false);
+    setIsAddDialogOpen(false);
+    setIsEditDialogOpen(false);
     fetchData();
+  };
+
+  const handleEditClick = (teacher: Teacher) => {
+    setSelectedTeacher(teacher);
+    setIsEditDialogOpen(true);
   };
 
   const handleDeleteClick = (teacher: Teacher) => {
@@ -157,14 +164,6 @@ export default function TeachersPage() {
     }
   };
   
-  const handleEditClick = (teacher: Teacher) => {
-    console.log("Mengubah guru:", teacher.id);
-     toast({
-        title: "Aksi Ubah",
-        description: `Mengubah "${teacher.name}". (UI belum diimplementasikan)`,
-      });
-  };
-  
   return (
     <>
       <Card>
@@ -175,7 +174,7 @@ export default function TeachersPage() {
               Lihat dan kelola semua guru terdaftar.
             </CardDescription>
           </div>
-          <Button onClick={() => setOpen(true)}>
+          <Button onClick={() => setIsAddDialogOpen(true)}>
             <PlusCircle className="mr-2 h-4 w-4" />
             Tambah Guru
           </Button>
@@ -290,7 +289,9 @@ export default function TeachersPage() {
           </div>
         </CardFooter>
       </Card>
-      <Dialog open={open} onOpenChange={setOpen}>
+      
+      {/* Add Dialog */}
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Tambah Guru Baru</DialogTitle>
@@ -301,6 +302,21 @@ export default function TeachersPage() {
           <TeacherForm onSuccess={handleSuccess} />
         </DialogContent>
       </Dialog>
+      
+      {/* Edit Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ubah Data Guru</DialogTitle>
+            <DialogDescription>
+              Perbarui detail untuk guru {selectedTeacher?.name}.
+            </DialogDescription>
+          </DialogHeader>
+          <TeacherForm onSuccess={handleSuccess} existingTeacher={selectedTeacher} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Alert Dialog */}
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

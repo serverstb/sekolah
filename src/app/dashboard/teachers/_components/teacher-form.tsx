@@ -16,42 +16,54 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { Teacher, Class } from "../page";
 
 type Subject = { id: string, name: string };
-type Class = { id: string, name: string };
 
 const formSchema = z.object({
   name: z.string().min(2, "Nama minimal harus 2 karakter."),
   nip: z.string().regex(/^\d+$/, "NIP harus berupa angka.").min(10, "NIP minimal harus 10 digit."),
   subjectId: z.string().nonempty("Silakan pilih mata pelajaran."),
+  taughtClassIds: z.array(z.string()).optional(),
 });
 
 type TeacherFormValues = z.infer<typeof formSchema>;
 
 interface TeacherFormProps {
     onSuccess: () => void;
+    existingTeacher?: Teacher | null;
 }
 
-export function TeacherForm({ onSuccess }: TeacherFormProps) {
+export function TeacherForm({ onSuccess, existingTeacher }: TeacherFormProps) {
   const { toast } = useToast();
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isEditMode = !!existingTeacher;
 
   useEffect(() => {
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const subjectsRes = await fetch('/api/subjects');
+            const [subjectsRes, classesRes] = await Promise.all([
+                fetch('/api/subjects'),
+                fetch('/api/classes'),
+            ]);
+            
             const subjectsData = await subjectsRes.json();
+            const classesData = await classesRes.json();
             setSubjects(subjectsData.subjects);
+            setClasses(classesData.classes);
+
         } catch (error) {
             toast({
                 variant: 'destructive',
                 title: 'Gagal memuat data',
-                description: 'Tidak bisa memuat daftar mata pelajaran.'
+                description: 'Tidak bisa memuat daftar mata pelajaran dan kelas.'
             })
         } finally {
             setIsLoading(false);
@@ -63,34 +75,53 @@ export function TeacherForm({ onSuccess }: TeacherFormProps) {
 
   const form = useForm<TeacherFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: isEditMode ? {
+        name: existingTeacher?.name,
+        nip: existingTeacher?.nip,
+        subjectId: existingTeacher?.subjectId,
+        taughtClassIds: existingTeacher?.taughtClassIds || [],
+    } : {
       name: "",
       nip: "",
       subjectId: "",
+      taughtClassIds: [],
     },
   });
+  
+  // Sync form with `existingTeacher` prop when it changes
+  useEffect(() => {
+      if (isEditMode && existingTeacher) {
+          form.reset({
+              name: existingTeacher.name,
+              nip: existingTeacher.nip,
+              subjectId: existingTeacher.subjectId,
+              taughtClassIds: existingTeacher.taughtClassIds || [],
+          })
+      }
+  }, [existingTeacher, isEditMode, form]);
 
   const onSubmit = async (values: TeacherFormValues) => {
     setIsSubmitting(true);
-    // Send an empty array for taughtClassIds as it's not handled in this form anymore
-    const payload = { ...values, taughtClassIds: [] };
+    
+    const url = isEditMode ? `/api/teachers/${existingTeacher.id}` : '/api/teachers';
+    const method = isEditMode ? 'PUT' : 'POST';
 
     try {
-        const response = await fetch('/api/teachers', {
-            method: 'POST',
+        const response = await fetch(url, {
+            method: method,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(values)
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message || 'Gagal menambahkan guru.');
+            throw new Error(data.message || 'Gagal menyimpan data guru.');
         }
 
         toast({
-            title: "Guru Ditambahkan",
-            description: `${values.name} telah berhasil terdaftar.`,
+            title: isEditMode ? "Guru Diperbarui" : "Guru Ditambahkan",
+            description: `${values.name} telah berhasil ${isEditMode ? 'diperbarui' : 'terdaftar'}.`,
         });
         onSuccess();
 
@@ -171,9 +202,59 @@ export function TeacherForm({ onSuccess }: TeacherFormProps) {
             </FormItem>
           )}
         />
+
+        {isEditMode && (
+          <FormField
+            control={form.control}
+            name="taughtClassIds"
+            render={() => (
+              <FormItem>
+                <div className="mb-4">
+                  <FormLabel className="text-base">Kelas yang Diajar</FormLabel>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  {classes.map((item) => (
+                    <FormField
+                      key={item.id}
+                      control={form.control}
+                      name="taughtClassIds"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={item.id}
+                            className="flex flex-row items-start space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(item.id)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([...(field.value || []), item.id])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          (value) => value !== item.id
+                                        )
+                                      )
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {item.name}
+                            </FormLabel>
+                          </FormItem>
+                        )
+                      }}
+                    />
+                  ))}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <div className="flex justify-end">
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Tambah Guru"}
+            {isSubmitting ? "Menyimpan..." : (isEditMode ? 'Simpan Perubahan' : 'Tambah Guru')}
             </Button>
         </div>
       </form>

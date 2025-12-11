@@ -2,6 +2,56 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 
+// UPDATE a teacher
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const id = params.id;
+  if (!id) {
+    return NextResponse.json({ message: 'ID guru tidak ditemukan.' }, { status: 400 });
+  }
+
+  const connection = await db.getConnection();
+  
+  try {
+    const { name, nip, subjectId, taughtClassIds } = await req.json();
+
+    if (!name || !nip || !subjectId) {
+      return NextResponse.json({ message: 'Nama, NIP, dan Mata Pelajaran harus diisi.' }, { status: 400 });
+    }
+
+    await connection.beginTransaction();
+
+    // 1. Update the teacher's main details
+    await connection.execute(
+      'UPDATE teachers SET name = ?, nip = ?, subjectId = ? WHERE id = ?',
+      [name, nip, subjectId, id]
+    );
+
+    // 2. Clear existing class associations for this teacher
+    await connection.execute('DELETE FROM teacher_classes WHERE teacherId = ?', [id]);
+
+    // 3. Insert new class associations if any are provided
+    if (taughtClassIds && taughtClassIds.length > 0) {
+      const classValues = taughtClassIds.map((classId: string) => [id, classId]);
+      await connection.query('INSERT INTO teacher_classes (teacherId, classId) VALUES ?', [classValues]);
+    }
+    
+    await connection.commit();
+
+    return NextResponse.json({ message: 'Data guru berhasil diperbarui.' });
+
+  } catch (error) {
+    await connection.rollback();
+    console.error(`Failed to update teacher ${id}:`, error);
+    return NextResponse.json({ message: 'Terjadi kesalahan pada server.' }, { status: 500 });
+  } finally {
+      connection.release();
+  }
+}
+
+
 // DELETE a teacher
 export async function DELETE(
   req: NextRequest,
