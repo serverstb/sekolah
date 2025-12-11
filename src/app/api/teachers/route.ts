@@ -12,11 +12,9 @@ export async function GET() {
       SELECT 
         t.id, t.name, t.nip, t.subjectId, t.avatarUrl, t.avatarHint,
         s.name as subjectName,
-        GROUP_CONCAT(tc.classId) as taughtClassIds
+        (SELECT GROUP_CONCAT(tc.classId) FROM teacher_classes tc WHERE tc.teacherId = t.id) as taughtClassIds
       FROM teachers t
       LEFT JOIN subjects s ON t.subjectId = s.id
-      LEFT JOIN teacher_classes tc ON t.id = tc.teacherId
-      GROUP BY t.id
       ORDER BY t.name ASC
     `);
     
