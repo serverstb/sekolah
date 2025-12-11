@@ -42,7 +42,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   type Schedule,
   type DayOfWeek,
@@ -85,6 +84,10 @@ export default function SchedulesPage() {
               fetch('/api/subjects'),
           ]);
           
+          if (!schedulesRes.ok || !classesRes.ok || !teachersRes.ok || !subjectsRes.ok) {
+              throw new Error('Gagal memuat sebagian data. Silakan coba lagi.');
+          }
+
           const schedulesData = await schedulesRes.json();
           const classesData = await classesRes.json();
           const teachersData = await teachersRes.json();
@@ -95,9 +98,9 @@ export default function SchedulesPage() {
           setTeachers(teachersData.teachers || []);
           setSubjects(subjectsData.subjects || []);
 
-      } catch (error) {
+      } catch (error: any) {
           console.error("Failed to fetch schedule data:", error);
-          toast({ variant: 'destructive', title: 'Error', description: 'Gagal memuat data.' });
+          toast({ variant: 'destructive', title: 'Error', description: error.message });
       } finally {
           setIsLoading(false);
       }
@@ -113,14 +116,21 @@ export default function SchedulesPage() {
     fetchData();
   };
 
-  const getScheduleForDay = (classId: string, day: DayOfWeek) => {
+  const getScheduleForDay = (day: DayOfWeek) => {
     return schedules
-      .filter((s) => s.classId === classId && s.day === day)
-      .sort((a, b) => a.startTime.localeCompare(b.startTime));
+      .filter((s) => s.day === day)
+      .sort((a, b) => {
+          if (a.classId.localeCompare(b.classId) !== 0) {
+              return a.classId.localeCompare(b.classId);
+          }
+          return a.startTime.localeCompare(b.startTime);
+      });
   };
   
   const getSubjectById = (id: string) => subjects.find((s) => s.id === id);
   const getTeacherById = (id: string) => teachers.find((t) => t.id === id);
+  const getClassById = (id: string) => classes.find((c) => c.id === id);
+
 
   const handleDeleteClick = (schedule: Schedule) => {
     setSelectedSchedule(schedule);
@@ -173,7 +183,7 @@ export default function SchedulesPage() {
           <div>
             <CardTitle>Jadwal Pelajaran</CardTitle>
             <CardDescription>
-              Lihat dan kelola jadwal pelajaran kelas.
+              Lihat dan kelola jadwal pelajaran untuk semua kelas.
             </CardDescription>
           </div>
             <Button onClick={() => setOpen(true)}>
@@ -182,85 +192,64 @@ export default function SchedulesPage() {
             </Button>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue={classes[0]?.id || "none"}>
-            {classes.length > 0 && (
-                <TabsList className="grid w-full grid-cols-5 mb-4">
-                {classes.map((cls) => (
-                    <TabsTrigger key={cls.id} value={cls.id}>
-                    {cls.name}
-                    </TabsTrigger>
-                ))}
-                </TabsList>
-            )}
-            {classes.length > 0 ? (
-                classes.map((cls) => (
-                <TabsContent key={cls.id} value={cls.id}>
-                    <div className="mt-4 space-y-6">
-                    {daysOfWeek.map((day) => (
-                        <div key={day}>
-                        <h3 className="text-lg font-semibold mb-2">{daysOfWeekIndonesian[day]}</h3>
-                        <Table>
-                            <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[20%]">Waktu</TableHead>
-                                <TableHead className="w-[35%]">Mata Pelajaran</TableHead>
-                                <TableHead className="w-[35%]">Guru</TableHead>
-                                <TableHead className="w-[10%] text-right">Aksi</TableHead>
-                            </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                            {getScheduleForDay(cls.id, day).length > 0 ? (
-                                getScheduleForDay(cls.id, day).map((schedule) => {
-                                const subject = getSubjectById(schedule.subjectId);
-                                const teacher = getTeacherById(schedule.teacherId);
-                                return (
-                                    <TableRow key={schedule.id}>
-                                    <TableCell>
-                                        {schedule.startTime} - {schedule.endTime}
-                                    </TableCell>
-                                    <TableCell>{subject?.name || "N/A"}</TableCell>
-                                    <TableCell>{teacher?.name || "N/A"}</TableCell>
-                                    <TableCell className="text-right">
-                                        <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                            <span className="sr-only">Buka menu</span>
-                                            <MoreHorizontal className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem onClick={() => handleDeleteClick(schedule)}>
-                                            Hapus
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {daysOfWeek.map((day) => (
+                    <div key={day}>
+                        <h3 className="text-lg font-semibold mb-3 text-center">{daysOfWeekIndonesian[day]}</h3>
+                        <div className="border rounded-lg overflow-hidden">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[25%]">Waktu</TableHead>
+                                        <TableHead>Kelas</TableHead>
+                                        <TableHead>Pelajaran</TableHead>
+                                        <TableHead>Guru</TableHead>
+                                        <TableHead className="w-[10%] text-right"></TableHead>
                                     </TableRow>
-                                );
-                                })
-                            ) : (
-                                <TableRow>
-                                <TableCell
-                                    colSpan={4}
-                                    className="text-center h-24"
-                                >
-                                    Tidak ada jadwal untuk hari {daysOfWeekIndonesian[day]}.
-                                </TableCell>
-                                </TableRow>
-                            )}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                {getScheduleForDay(day).length > 0 ? (
+                                    getScheduleForDay(day).map((schedule) => {
+                                        const subject = getSubjectById(schedule.subjectId);
+                                        const teacher = getTeacherById(schedule.teacherId);
+                                        const cls = getClassById(schedule.classId);
+                                        return (
+                                            <TableRow key={schedule.id}>
+                                                <TableCell className="text-xs">{schedule.startTime} - {schedule.endTime}</TableCell>
+                                                <TableCell className="font-medium">{cls?.name || "N/A"}</TableCell>
+                                                <TableCell>{subject?.name || "N/A"}</TableCell>
+                                                <TableCell className="text-xs">{teacher?.name || "N/A"}</TableCell>
+                                                <TableCell className="text-right p-1">
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                <span className="sr-only">Buka menu</span>
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuItem onClick={() => handleDeleteClick(schedule)}>
+                                                                Hapus
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center h-24 text-muted-foreground">
+                                            Tidak ada jadwal.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                                </TableBody>
+                            </Table>
                         </div>
-                    ))}
                     </div>
-                </TabsContent>
-                ))
-            ) : (
-                <div className="text-center text-muted-foreground py-12">
-                    <p>Tidak ada data kelas untuk menampilkan jadwal. Silakan tambah kelas terlebih dahulu.</p>
-                </div>
-            )}
-          </Tabs>
+                ))}
+            </div>
         </CardContent>
       </Card>
       <Dialog open={open} onOpenChange={setOpen}>
