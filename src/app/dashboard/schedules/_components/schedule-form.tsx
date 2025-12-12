@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type DayOfWeek, type Teacher, type Subject, type Class } from "@/lib/types";
+import { type DayOfWeek, type Staff, type Subject, type Class } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -57,25 +57,25 @@ export function ScheduleForm({ onSuccess }: ScheduleFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [classes, setClasses] = useState<Class[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [teachers, setTeachers] = useState<Staff[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
       try {
-        const [classesRes, subjectsRes, teachersRes] = await Promise.all([
+        const [classesRes, subjectsRes, staffRes] = await Promise.all([
           fetch('/api/classes'),
           fetch('/api/subjects'),
-          fetch('/api/teachers')
+          fetch('/api/staff')
         ]);
         
         const classesData = await classesRes.json();
         const subjectsData = await subjectsRes.json();
-        const teachersData = await teachersRes.json();
+        const staffData = await staffRes.json();
 
         setClasses(classesData.classes || []);
         setSubjects(subjectsData.subjects || []);
-        setTeachers(teachersData.teachers || []);
+        setTeachers((staffData.staff || []).filter((s: Staff) => s.role === 'teacher'));
 
       } catch (error) {
         toast({ variant: 'destructive', title: 'Error', description: 'Gagal memuat data untuk form jadwal.' });

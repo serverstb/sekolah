@@ -52,7 +52,7 @@ export type User = {
   id: string;
   email: string;
   role: "admin" | "teacher";
-  teacherId?: string | null;
+  staffId?: string | null;
 };
 
 const ITEMS_PER_PAGE = 5;
@@ -169,7 +169,7 @@ export default function UsersPage() {
               <TableRow>
                 <TableHead>Email</TableHead>
                 <TableHead>Peran</TableHead>
-                <TableHead>ID Guru Terkait</TableHead>
+                <TableHead>ID Staf Terkait</TableHead>
                 <TableHead className="text-right">Aksi</TableHead>
               </TableRow>
             </TableHeader>
@@ -192,7 +192,7 @@ export default function UsersPage() {
                         {user.role}
                       </Badge>
                     </TableCell>
-                    <TableCell>{user.teacherId || 'N/A'}</TableCell>
+                    <TableCell>{user.staffId || 'N/A'}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

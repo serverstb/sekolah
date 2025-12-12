@@ -24,22 +24,22 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import type { User } from "../page";
-import type { Teacher } from "../../teachers/page";
+import type { Staff } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
   email: z.string().email("Format email tidak valid."),
   password: z.string().optional(),
   role: z.enum(["admin", "teacher"], { required_error: "Peran harus dipilih." }),
-  teacherId: z.string().optional(),
+  staffId: z.string().optional(),
 }).refine(data => {
     if (data.role === 'teacher') {
-        return !!data.teacherId;
+        return !!data.staffId;
     }
     return true;
 }, {
     message: "Guru harus dipilih untuk peran 'teacher'.",
-    path: ["teacherId"],
+    path: ["staffId"],
 });
 
 
@@ -52,7 +52,7 @@ interface UserFormProps {
 
 export function UserForm({ onSuccess, existingUser }: UserFormProps) {
   const { toast } = useToast();
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [teachers, setTeachers] = useState<Staff[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = !!existingUser;
@@ -61,10 +61,10 @@ export function UserForm({ onSuccess, existingUser }: UserFormProps) {
     async function fetchTeachers() {
       setIsLoadingData(true);
       try {
-        const res = await fetch('/api/teachers');
+        const res = await fetch('/api/staff');
         const data = await res.json();
-        if (!res.ok) throw new Error('Gagal memuat data guru');
-        setTeachers(data.teachers);
+        if (!res.ok) throw new Error('Gagal memuat data staf');
+        setTeachers((data.staff || []).filter((s: Staff) => s.role === 'teacher'));
       } catch (error) {
         toast({
           variant: 'destructive',
@@ -85,16 +85,16 @@ export function UserForm({ onSuccess, existingUser }: UserFormProps) {
       email: existingUser?.email || "",
       password: "",
       role: existingUser?.role || undefined,
-      teacherId: existingUser?.teacherId || "",
+      staffId: existingUser?.staffId || "",
     },
   });
 
   const onSubmit = async (values: UserFormValues) => {
     setIsSubmitting(true);
 
-    // Make sure teacherId is null if role is not teacher
+    // Make sure staffId is null if role is not teacher
     if (values.role !== 'teacher') {
-        values.teacherId = undefined;
+        values.staffId = undefined;
     }
     
     // In edit mode, if password is empty, don't send it
@@ -198,7 +198,7 @@ export function UserForm({ onSuccess, existingUser }: UserFormProps) {
         {selectedRole === 'teacher' && (
              <FormField
                 control={form.control}
-                name="teacherId"
+                name="staffId"
                 render={({ field }) => (
                     <FormItem>
                     <FormLabel>Guru Terkait</FormLabel>

@@ -1,98 +1,63 @@
--- This is the schema for the database.
--- It's written in SQL and can be used to create the database.
+CREATE TABLE subjects (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
 
--- Create the subjects table
-CREATE TABLE `subjects` (
-  `id` varchar(10) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE staff (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    role ENUM('teacher', 'employee') NOT NULL,
+    nip VARCHAR(255) UNIQUE, -- Only for teachers
+    jobTitle VARCHAR(255), -- Only for employees
+    subjectId VARCHAR(255), -- Only for teachers
+    avatarUrl VARCHAR(255),
+    avatarHint VARCHAR(255),
+    FOREIGN KEY (subjectId) REFERENCES subjects(id) ON DELETE SET NULL
+);
 
--- Create the teachers table
-CREATE TABLE `teachers` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `nip` varchar(255) NOT NULL,
-  `subjectId` varchar(10) DEFAULT NULL,
-  `avatarUrl` varchar(255) DEFAULT NULL,
-  `avatarHint` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nip` (`nip`),
-  KEY `subjectId` (`subjectId`),
-  CONSTRAINT `teachers_ibfk_1` FOREIGN KEY (`subjectId`) REFERENCES `subjects` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE classes (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    walikelasId VARCHAR(255) UNIQUE,
+    FOREIGN KEY (walikelasId) REFERENCES staff(id) ON DELETE SET NULL
+);
 
--- Create the classes table
-CREATE TABLE `classes` (
-  `id` varchar(10) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `walikelasId` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  KEY `walikelasId` (`walikelasId`),
-  CONSTRAINT `classes_ibfk_1` FOREIGN KEY (`walikelasId`) REFERENCES `teachers` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE students (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    classId VARCHAR(255),
+    avatarUrl VARCHAR(255),
+    avatarHint VARCHAR(255),
+    FOREIGN KEY (classId) REFERENCES classes(id) ON DELETE SET NULL
+);
 
--- Create the students table
-CREATE TABLE `students` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `classId` varchar(10) DEFAULT NULL,
-  `avatarUrl` varchar(255) DEFAULT NULL,
-  `avatarHint` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `classId` (`classId`),
-  CONSTRAINT `students_ibfk_1` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE staff_classes (
+    staffId VARCHAR(255),
+    classId VARCHAR(255),
+    PRIMARY KEY (staffId, classId),
+    FOREIGN KEY (staffId) REFERENCES staff(id) ON DELETE CASCADE,
+    FOREIGN KEY (classId) REFERENCES classes(id) ON DELETE CASCADE
+);
 
--- Create the teacher_classes join table
-CREATE TABLE `teacher_classes` (
-  `teacherId` varchar(255) NOT NULL,
-  `classId` varchar(10) NOT NULL,
-  PRIMARY KEY (`teacherId`,`classId`),
-  KEY `classId` (`classId`),
-  CONSTRAINT `teacher_classes_ibfk_1` FOREIGN KEY (`teacherId`) REFERENCES `teachers` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `teacher_classes_ibfk_2` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE schedules (
+    id VARCHAR(255) PRIMARY KEY,
+    classId VARCHAR(255) NOT NULL,
+    subjectId VARCHAR(255) NOT NULL,
+    teacherId VARCHAR(255) NOT NULL,
+    day ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') NOT NULL,
+    startTime TIME NOT NULL,
+    endTime TIME NOT NULL,
+    FOREIGN KEY (classId) REFERENCES classes(id) ON DELETE CASCADE,
+    FOREIGN KEY (subjectId) REFERENCES subjects(id) ON DELETE CASCADE,
+    FOREIGN KEY (teacherId) REFERENCES staff(id) ON DELETE CASCADE,
+    UNIQUE (classId, day, startTime)
+);
 
--- Create the users table
-CREATE TABLE `users` (
-  `id` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` enum('admin','teacher') NOT NULL,
-  `teacherId` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  KEY `teacherId` (`teacherId`),
-  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`teacherId`) REFERENCES `teachers` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- Create the schedules table
-CREATE TABLE `schedules` (
-  `id` varchar(255) NOT NULL,
-  `classId` varchar(10) NOT NULL,
-  `subjectId` varchar(10) NOT NULL,
-  `teacherId` varchar(255) NOT NULL,
-  `day` enum('Monday','Tuesday','Wednesday','Thursday','Friday') NOT NULL,
-  `startTime` time NOT NULL,
-  `endTime` time NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `classId` (`classId`),
-  KEY `subjectId` (`subjectId`),
-  KEY `teacherId` (`teacherId`),
-  CONSTRAINT `schedules_ibfk_1` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `schedules_ibfk_2` FOREIGN KEY (`subjectId`) REFERENCES `subjects` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `schedules_ibfk_3` FOREIGN KEY (`teacherId`) REFERENCES `teachers` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- Create the employees table
-CREATE TABLE `employees` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `role` varchar(255) NOT NULL,
-  `avatarUrl` varchar(255) DEFAULT NULL,
-  `avatarHint` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE users (
+    id VARCHAR(255) PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'teacher') NOT NULL,
+    staffId VARCHAR(255) UNIQUE,
+    FOREIGN KEY (staffId) REFERENCES staff(id) ON DELETE SET NULL
+);

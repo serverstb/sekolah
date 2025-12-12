@@ -19,14 +19,14 @@ service cloud.firestore {
       return isSignedIn() && request.auth.token.role == 'teacher';
     }
 
-    // Check if the user is the owner of a document (e.g., their own teacher profile)
+    // Check if the user is the owner of a document (e.g., their own staff profile)
     function isOwner(userId) {
         return request.auth.uid == userId;
     }
 
     // Check if a teacher is assigned to a specific class
     function isTeacherForClass(classId) {
-      return isTeacher() && get(/databases/$(database)/documents/teachers/$(request.auth.uid)).data.taughtClassIds.hasAny([classId]);
+      return isTeacher() && get(/databases/$(database)/documents/staff/$(request.auth.uid)).data.taughtClassIds.hasAny([classId]);
     }
 
 
@@ -40,9 +40,11 @@ service cloud.firestore {
 
     // == Teacher Access Rules ==
 
-    // Teachers can read their own profile
-    match /teachers/{teacherId} {
-      allow read: if isTeacher() && isOwner(teacherId);
+    // Staff can read their own profile
+    match /staff/{staffId} {
+      allow read: if isTeacher() && isOwner(staffId);
+      // Admin can manage all staff
+      allow write: if isAdmin();
     }
 
     // Teachers can read subjects.

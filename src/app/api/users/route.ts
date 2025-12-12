@@ -9,7 +9,7 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 10);
 // GET all users
 export async function GET(req: NextRequest) {
   try {
-    const [rows]: any = await db.execute('SELECT id, email, role, teacherId FROM users ORDER BY email ASC');
+    const [rows]: any = await db.execute('SELECT id, email, role, staffId FROM users ORDER BY email ASC');
     return NextResponse.json({ users: rows });
   } catch (error) {
     console.error('Failed to fetch users:', error);
@@ -20,14 +20,14 @@ export async function GET(req: NextRequest) {
 // CREATE a new user
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, role = 'teacher', teacherId } = await req.json();
+    const { email, password, role = 'teacher', staffId } = await req.json();
 
     if (!email || !password) {
       return NextResponse.json({ message: 'Email dan password harus diisi.' }, { status: 400 });
     }
-     // On registration, teacherId might not be available, so we don't validate it here.
+     // On registration, staffId might not be available, so we don't validate it here.
      // It can be assigned later in the user management page.
-     if (role === 'teacher' && !teacherId && req.url.includes('/api/users')) {
+     if (role === 'teacher' && !staffId && req.url.includes('/api/users')) {
         // This validation can be more specific for backend-only operations if needed
      }
 
@@ -40,10 +40,10 @@ export async function POST(req: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
     const userId = `USR-${nanoid()}`;
 
-    // Insert with teacherId as null if not provided
+    // Insert with staffId as null if not provided
     await db.execute(
-      'INSERT INTO users (id, email, password, role, teacherId) VALUES (?, ?, ?, ?, ?)',
-      [userId, email, hashedPassword, role, teacherId || null]
+      'INSERT INTO users (id, email, password, role, staffId) VALUES (?, ?, ?, ?, ?)',
+      [userId, email, hashedPassword, role, staffId || null]
     );
 
     return NextResponse.json({ message: 'Pengguna berhasil dibuat.', userId }, { status: 201 });
@@ -63,13 +63,13 @@ export async function PUT(req: NextRequest) {
     }
 
     try {
-        const { email, password, role, teacherId } = await req.json();
+        const { email, password, role, staffId } = await req.json();
 
         if (!email || !role) {
             return NextResponse.json({ message: 'Email dan peran harus diisi.' }, { status: 400 });
         }
-        if (role === 'teacher' && !teacherId) {
-            return NextResponse.json({ message: 'Guru terkait harus dipilih untuk peran teacher.' }, { status: 400 });
+        if (role === 'teacher' && !staffId) {
+            return NextResponse.json({ message: 'Staf terkait harus dipilih untuk peran teacher.' }, { status: 400 });
         }
 
         // Check for existing email on another user
@@ -82,14 +82,14 @@ export async function PUT(req: NextRequest) {
             // Update with password
             const hashedPassword = await bcrypt.hash(password, 10);
             await db.execute(
-                'UPDATE users SET email = ?, password = ?, role = ?, teacherId = ? WHERE id = ?',
-                [email, hashedPassword, role, role === 'teacher' ? teacherId : null, id]
+                'UPDATE users SET email = ?, password = ?, role = ?, staffId = ? WHERE id = ?',
+                [email, hashedPassword, role, role === 'teacher' ? staffId : null, id]
             );
         } else {
             // Update without password
             await db.execute(
-                'UPDATE users SET email = ?, role = ?, teacherId = ? WHERE id = ?',
-                [email, role, role === 'teacher' ? teacherId : null, id]
+                'UPDATE users SET email = ?, role = ?, staffId = ? WHERE id = ?',
+                [email, role, role === 'teacher' ? staffId : null, id]
             );
         }
         

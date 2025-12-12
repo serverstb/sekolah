@@ -22,8 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   type AttendanceRecord,
   type Student,
-  type Teacher,
-  type Employee,
+  type Staff,
   type Class,
 } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -124,12 +123,10 @@ export default function ReportPage() {
   
   // Data state
   const [students, setStudents] = useState<Student[]>([]);
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [staff, setStaff] = useState<Staff[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
-  const [teacherAttendanceRecords, setTeacherAttendanceRecords] = useState<AttendanceRecord[]>([]);
-  const [employeeAttendanceRecords, setEmployeeAttendanceRecords] = useState<AttendanceRecord[]>([]);
+  const [staffAttendanceRecords, setStaffAttendanceRecords] = useState<AttendanceRecord[]>([]);
   
   const [isLoading, setIsLoading] = useState(true);
 
@@ -140,29 +137,23 @@ export default function ReportPage() {
         // Using mock data for now as API endpoints are not fully implemented
         const classesRes = await fetch('/api/classes');
         const studentsRes = await fetch('/api/students');
-        const teachersRes = await fetch('/api/teachers');
-        // const employeesRes = await fetch('/api/employees');
+        const staffRes = await fetch('/api/staff');
         // const attendanceRes = await fetch('/api/attendance/students');
-        // const teacherAttendanceRes = await fetch('/api/attendance/teachers');
-        // const employeeAttendanceRes = await fetch('/api/attendance/employees');
-
+        // const staffAttendanceRes = await fetch('/api/attendance/staff');
+        
         const classesData = await classesRes.json();
         const studentsData = await studentsRes.json();
-        const teachersData = await teachersRes.json();
+        const staffData = await staffRes.json();
         // Mock data
-        const employeesData = { employees: [] };
         const attendanceData = { attendanceRecords: [] };
-        const teacherAttendanceData = { attendanceRecords: [] };
-        const employeeAttendanceData = { attendanceRecords: [] };
+        const staffAttendanceData = { attendanceRecords: [] };
 
 
         setClasses(classesData.classes || []);
         setStudents(studentsData.students || []);
-        setTeachers(teachersData.teachers || []);
-        setEmployees(employeesData.employees || []);
+        setStaff(staffData.staff || []);
         setAttendanceRecords(attendanceData.attendanceRecords.map((r: any) => ({...r, timestamp: new Date(r.timestamp)})));
-        setTeacherAttendanceRecords(teacherAttendanceData.attendanceRecords.map((r: any) => ({...r, timestamp: new Date(r.timestamp)})));
-        setEmployeeAttendanceRecords(employeeAttendanceData.attendanceRecords.map((r: any) => ({...r, timestamp: new Date(r.timestamp)})));
+        setStaffAttendanceRecords(staffAttendanceData.attendanceRecords.map((r: any) => ({...r, timestamp: new Date(r.timestamp)})));
 
       } catch (error) {
         console.error("Failed to fetch report data:", error);
@@ -173,6 +164,9 @@ export default function ReportPage() {
     fetchData();
   }, []);
 
+  const teachers = useMemo(() => staff.filter(s => s.role === 'teacher'), [staff]);
+  const employees = useMemo(() => staff.filter(s => s.role === 'employee'), [staff]);
+
   const dateRange = useMemo(() => {
     const year = parseInt(selectedYear);
     const month = parseInt(selectedMonth);
@@ -182,8 +176,7 @@ export default function ReportPage() {
   }, [selectedYear, selectedMonth]);
   
   const getStudentById = (id: string) => students.find((s) => s.id === id);
-  const getTeacherById = (id: string) => teachers.find((t) => t.id === id);
-  const getEmployeeById = (id: string) => employees.find((e) => e.id === id);
+  const getStaffById = (id: string) => staff.find((t) => t.id === id);
   const getClassById = (id: string) => classes.find((c) => c.id === id);
 
   const getChartData = <T extends {id: string}, R extends {timestamp: Date; status: "Present" | "Late" | "Absent"}>(
@@ -227,28 +220,27 @@ export default function ReportPage() {
       return isClassMatch && isDateMatch;
     });
   }, [classId, dateRange, attendanceRecords, students]);
+  
+  const filteredStaffRecords = useMemo(() => {
+    if (!dateRange) return [];
+    return staffAttendanceRecords.filter((record) => {
+      const recordDate = new Date(record.timestamp);
+      const isDateMatch = dateRange.from && dateRange.to 
+        ? recordDate >= dateRange.from && recordDate <= dateRange.to
+        : true;
+      return isDateMatch;
+    });
+  }, [dateRange, staffAttendanceRecords]);
+
 
   const filteredTeacherRecords = useMemo(() => {
-    if (!dateRange) return [];
-    return teacherAttendanceRecords.filter((record) => {
-      const recordDate = new Date(record.timestamp);
-      const isDateMatch = dateRange.from && dateRange.to 
-        ? recordDate >= dateRange.from && recordDate <= dateRange.to
-        : true;
-      return isDateMatch;
-    });
-  }, [dateRange, teacherAttendanceRecords]);
-
+      return filteredStaffRecords.filter(r => teachers.some(t => t.id === r.staffId))
+  }, [filteredStaffRecords, teachers]);
+  
   const filteredEmployeeRecords = useMemo(() => {
-    if (!dateRange) return [];
-    return employeeAttendanceRecords.filter((record) => {
-      const recordDate = new Date(record.timestamp);
-      const isDateMatch = dateRange.from && dateRange.to 
-        ? recordDate >= dateRange.from && recordDate <= dateRange.to
-        : true;
-      return isDateMatch;
-    });
-  }, [dateRange, employeeAttendanceRecords]);
+      return filteredStaffRecords.filter(r => employees.some(e => e.id === r.staffId))
+  }, [filteredStaffRecords, employees]);
+
 
   const studentChartData = useMemo(() => {
     let relevantStudents = students;
@@ -258,8 +250,8 @@ export default function ReportPage() {
     return getChartData(relevantStudents, filteredStudentRecords, 'studentId');
   }, [filteredStudentRecords, students, classId, dateRange]);
   
-  const teacherChartData = useMemo(() => getChartData(teachers, filteredTeacherRecords, 'teacherId'), [filteredTeacherRecords, teachers, dateRange]);
-  const employeeChartData = useMemo(() => getChartData(employees, filteredEmployeeRecords, 'employeeId'), [filteredEmployeeRecords, employees, dateRange]);
+  const teacherChartData = useMemo(() => getChartData(teachers, filteredTeacherRecords, 'staffId'), [filteredTeacherRecords, teachers, dateRange]);
+  const employeeChartData = useMemo(() => getChartData(employees, filteredEmployeeRecords, 'staffId'), [filteredEmployeeRecords, employees, dateRange]);
 
   if (isLoading) {
     return (
@@ -434,7 +426,7 @@ export default function ReportPage() {
               <TableBody>
                 {filteredTeacherRecords.length > 0 ? (
                   filteredTeacherRecords.map((record) => {
-                    const teacher = getTeacherById(record.teacherId);
+                    const teacher = getStaffById(record.staffId);
                     return (
                       <TableRow key={record.id}>
                         <TableCell>
@@ -492,7 +484,7 @@ export default function ReportPage() {
               <TableBody>
                 {filteredEmployeeRecords.length > 0 ? (
                   filteredEmployeeRecords.map((record) => {
-                    const employee = getEmployeeById(record.employeeId);
+                    const employee = getStaffById(record.staffId);
                     return (
                       <TableRow key={record.id}>
                         <TableCell>
@@ -512,7 +504,7 @@ export default function ReportPage() {
                             </div>
                           </div>
                         </TableCell>
-                         <TableCell className="hidden sm:table-cell">{employee?.role || "N/A"}</TableCell>
+                         <TableCell className="hidden sm:table-cell">{employee?.jobTitle || "N/A"}</TableCell>
                         <TableCell>
                           {format(new Date(record.timestamp), "HH:mm:ss")}
                         </TableCell>

@@ -45,7 +45,7 @@ import {
 import {
   type Schedule,
   type DayOfWeek,
-  type Teacher,
+  type Staff,
   type Subject,
   type Class
 } from "@/lib/types";
@@ -70,32 +70,32 @@ export default function SchedulesPage() {
 
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [staff, setStaff] = useState<Staff[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
       // Intentionally not setting loading to true here to avoid flicker on refetch
       try {
-          const [schedulesRes, classesRes, teachersRes, subjectsRes] = await Promise.all([
+          const [schedulesRes, classesRes, staffRes, subjectsRes] = await Promise.all([
               fetch('/api/schedules'),
               fetch('/api/classes'),
-              fetch('/api/teachers'),
+              fetch('/api/staff'),
               fetch('/api/subjects'),
           ]);
           
-          if (!schedulesRes.ok || !classesRes.ok || !teachersRes.ok || !subjectsRes.ok) {
+          if (!schedulesRes.ok || !classesRes.ok || !staffRes.ok || !subjectsRes.ok) {
               throw new Error('Gagal memuat sebagian data. Silakan coba lagi.');
           }
 
           const schedulesData = await schedulesRes.json();
           const classesData = await classesRes.json();
-          const teachersData = await teachersRes.json();
+          const staffData = await staffRes.json();
           const subjectsData = await subjectsRes.json();
 
           setSchedules(schedulesData.schedules || []);
           setClasses(classesData.classes || []);
-          setTeachers(teachersData.teachers || []);
+          setStaff(staffData.staff || []);
           setSubjects(subjectsData.subjects || []);
 
       } catch (error: any) {
@@ -121,14 +121,16 @@ export default function SchedulesPage() {
       .filter((s) => s.day === day)
       .sort((a, b) => {
           if (a.classId.localeCompare(b.classId) !== 0) {
-              return a.classId.localeCompare(b.classId);
+              const classA = getClassById(a.classId)?.name || '';
+              const classB = getClassById(b.classId)?.name || '';
+              return classA.localeCompare(classB);
           }
           return a.startTime.localeCompare(b.startTime);
       });
   };
   
   const getSubjectById = (id: string) => subjects.find((s) => s.id === id);
-  const getTeacherById = (id: string) => teachers.find((t) => t.id === id);
+  const getTeacherById = (id: string) => staff.find((t) => t.id === id);
   const getClassById = (id: string) => classes.find((c) => c.id === id);
 
 

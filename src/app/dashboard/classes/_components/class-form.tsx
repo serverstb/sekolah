@@ -24,8 +24,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-
-type Teacher = { id: string; name: string };
+import type { Staff } from "@/lib/types";
 
 const formSchema = z.object({
   name: z.string().min(2, "Nama kelas minimal harus 2 karakter."),
@@ -40,7 +39,7 @@ interface ClassFormProps {
 
 export function ClassForm({ onSuccess }: ClassFormProps) {
   const { toast } = useToast();
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [teachers, setTeachers] = useState<Staff[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -48,9 +47,10 @@ export function ClassForm({ onSuccess }: ClassFormProps) {
     const fetchTeachers = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch('/api/teachers');
+            const response = await fetch('/api/staff');
             const data = await response.json();
-            setTeachers(data.teachers || []);
+            // Filter for teachers only
+            setTeachers((data.staff || []).filter((s: Staff) => s.role === 'teacher'));
         } catch (error) {
             toast({
                 variant: 'destructive',

@@ -1,5 +1,4 @@
 
-
 export type Student = {
   id: string;
   name: string;
@@ -12,16 +11,19 @@ export type Student = {
 export type AttendanceRecord = {
   id: string;
   studentId: string;
+  staffId: string;
   timestamp: Date | string;
   status: "Present" | "Late" | "Absent";
 };
 
-export type Teacher = {
+export type Staff = {
   id: string;
   name: string;
-  nip: string;
-  subjectId: string;
+  role: 'teacher' | 'employee';
+  nip?: string;
+  subjectId?: string;
   subjectName?: string;
+  jobTitle?: string;
   avatarUrl: string;
   avatarHint: string;
   taughtClassIds: string[];
@@ -33,28 +35,6 @@ export type Class = {
   walikelasId: string; 
   walikelasName?: string;
   studentCount: number;
-};
-
-export type Employee = {
-    id: string;
-    name: string;
-    role: string;
-    avatarUrl: string;
-    avatarHint: string;
-}
-
-export type TeacherAttendanceRecord = {
-  id: string;
-  teacherId: string;
-  timestamp: Date | string;
-  status: "Present" | "Late" | "Absent";
-};
-
-export type EmployeeAttendanceRecord = {
-  id: string;
-  employeeId: string;
-  timestamp: Date | string;
-  status: "Present" | "Late" | "Absent";
 };
 
 export type AdmissionStatus = "Pending" | "Accepted" | "Rejected";
@@ -108,10 +88,8 @@ export const newStudentApplicants: any[] = [];
 export const students: any[] = [];
 export const classes: any[] = [];
 export const attendanceRecords: any[] = [];
-export const teachers: any[] = [];
+export const staff: any[] = [];
 export const subjects: any[] = [];
 export const teachingJournals: any[] = [];
 export const schedules: any[] = [];
-export const employees: any[] = [];
-export const teacherAttendanceRecords: any[] = [];
-export const employeeAttendanceRecords: any[] = [];
+export const staffAttendanceRecords: any[] = [];

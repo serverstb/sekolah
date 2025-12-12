@@ -13,10 +13,10 @@ export async function GET() {
         c.id, 
         c.name, 
         c.walikelasId, 
-        t.name AS walikelasName,
+        st.name AS walikelasName,
         (SELECT COUNT(*) FROM students s WHERE s.classId = c.id) as studentCount
       FROM classes c
-      LEFT JOIN teachers t ON c.walikelasId = t.id
+      LEFT JOIN staff st ON c.walikelasId = st.id
       ORDER BY c.name ASC
     `);
     return NextResponse.json({ classes: rows });

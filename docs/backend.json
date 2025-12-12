@@ -32,7 +32,7 @@
         },
         "walikelasId": {
           "type": "string",
-          "description": "ID guru yang menjadi wali kelas."
+          "description": "ID anggota staf (guru) yang menjadi wali kelas."
         },
         "studentCount": {
           "type": "number",
@@ -41,31 +41,40 @@
       },
       "required": ["id", "name", "walikelasId", "studentCount"]
     },
-    "Teacher": {
-      "title": "Guru",
-      "description": "Mewakili seorang guru di sekolah.",
+    "Staff": {
+      "title": "Staf",
+      "description": "Mewakili seorang guru atau karyawan di sekolah.",
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "ID unik untuk guru."
+          "description": "ID unik untuk staf."
         },
         "name": {
           "type": "string",
-          "description": "Nama lengkap guru."
+          "description": "Nama lengkap staf."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["teacher", "employee"],
+          "description": "Peran staf: guru atau karyawan."
         },
         "nip": {
           "type": "string",
-          "description": "Nomor Induk Pegawai (NIP) guru."
+          "description": "Nomor Induk Pegawai (NIP), hanya untuk guru."
         },
         "subjectId": {
           "type": "string",
-          "description": "ID mata pelajaran yang diampu oleh guru."
+          "description": "ID mata pelajaran yang diampu (hanya untuk guru)."
+        },
+        "jobTitle": {
+            "type": "string",
+            "description": "Jabatan atau posisi (hanya untuk karyawan)."
         },
         "avatarUrl": {
           "type": "string",
           "format": "uri",
-          "description": "URL foto profil guru."
+          "description": "URL foto profil staf."
         },
         "avatarHint": {
           "type": "string",
@@ -76,10 +85,10 @@
           "items": {
             "type": "string"
           },
-          "description": "Daftar ID kelas yang diajar oleh guru."
+          "description": "Daftar ID kelas yang diajar (hanya untuk guru)."
         }
       },
-      "required": ["id", "name", "nip", "subjectId", "taughtClassIds"]
+      "required": ["id", "name", "role"]
     },
     "Student": {
       "title": "Siswa",
@@ -172,7 +181,7 @@
     },
     "AttendanceRecord": {
       "title": "Catatan Absensi",
-      "description": "Mencatat kehadiran (siswa, guru, karyawan) pada waktu tertentu.",
+      "description": "Mencatat kehadiran (siswa, staf) pada waktu tertentu.",
       "type": "object",
       "properties": {
         "id": {
@@ -183,13 +192,9 @@
           "type": "string",
           "description": "ID siswa (jika absensi siswa)."
         },
-        "teacherId": {
+        "staffId": {
           "type": "string",
-          "description": "ID guru (jika absensi guru)."
-        },
-        "employeeId": {
-          "type": "string",
-          "description": "ID karyawan (jika absensi karyawan)."
+          "description": "ID staf (jika absensi staf)."
         },
         "timestamp": {
           "type": "string",
@@ -215,7 +220,7 @@
         },
         "teacherId": {
           "type": "string",
-          "description": "ID guru yang membuat jurnal."
+          "description": "ID guru (staf) yang membuat jurnal."
         },
         "classId": {
           "type": "string",
@@ -264,7 +269,7 @@
         },
         "teacherId": {
           "type": "string",
-          "description": "ID guru yang mengajar."
+          "description": "ID guru (staf) yang mengajar."
         },
         "day": {
           "type": "string",
@@ -283,35 +288,6 @@
         }
       },
       "required": ["id", "classId", "subjectId", "teacherId", "day", "startTime", "endTime"]
-    },
-    "Employee": {
-      "title": "Karyawan",
-      "description": "Mewakili seorang karyawan non-guru di sekolah.",
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "ID unik untuk karyawan."
-        },
-        "name": {
-          "type": "string",
-          "description": "Nama lengkap karyawan."
-        },
-        "role": {
-          "type": "string",
-          "description": "Jabatan atau peran karyawan."
-        },
-        "avatarUrl": {
-          "type": "string",
-          "format": "uri",
-          "description": "URL foto profil karyawan."
-        },
-        "avatarHint": {
-          "type": "string",
-          "description": "Petunjuk kata kunci untuk gambar avatar."
-        }
-      },
-      "required": ["id", "name", "role"]
     }
   },
   "auth": {
@@ -326,17 +302,13 @@
       "schema": { "$ref": "#/entities/Class" },
       "description": "Koleksi semua kelas."
     },
-    "/teachers/{teacherId}": {
-      "schema": { "$ref": "#/entities/Teacher" },
-      "description": "Koleksi semua guru."
+    "/staff/{staffId}": {
+      "schema": { "$ref": "#/entities/Staff" },
+      "description": "Koleksi semua staf (guru dan karyawan)."
     },
     "/students/{studentId}": {
       "schema": { "$ref": "#/entities/Student" },
       "description": "Koleksi semua siswa."
-    },
-    "/employees/{employeeId}": {
-      "schema": { "$ref": "#/entities/Employee" },
-      "description": "Koleksi semua karyawan."
     },
     "/newStudentApplicants/{applicantId}": {
       "schema": { "$ref": "#/entities/NewStudentApplicant" },
