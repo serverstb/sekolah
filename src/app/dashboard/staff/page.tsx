@@ -159,11 +159,11 @@ export default function StaffPage() {
         });
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.message || 'Gagal menghapus staf.');
+            throw new Error(data.message || 'Gagal menghapus data.');
         }
         toast({
-            title: "Staf Dihapus",
-            description: `Staf "${selectedStaff.name}" telah dihapus.`,
+            title: "Data Dihapus",
+            description: `Data untuk "${selectedStaff.name}" telah dihapus.`,
         });
         fetchData();
     } catch (error: any) {
@@ -183,14 +183,14 @@ export default function StaffPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Manajemen Staf</CardTitle>
+            <CardTitle>Manajemen Guru & Karyawan</CardTitle>
             <CardDescription>
               Lihat dan kelola semua guru dan karyawan.
             </CardDescription>
           </div>
           <Button onClick={() => { setSelectedStaff(null); setIsAddDialogOpen(true); }}>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Tambah Staf
+            Tambah Data
           </Button>
         </CardHeader>
         <CardContent>
@@ -327,9 +327,9 @@ export default function StaffPage() {
       <Dialog open={isAddDialogOpen || isEditDialogOpen} onOpenChange={isEditDialogOpen ? setIsEditDialogOpen : setIsAddDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{isEditDialogOpen ? 'Ubah Data Staf' : 'Tambah Staf Baru'}</DialogTitle>
+            <DialogTitle>{isEditDialogOpen ? 'Ubah Data' : 'Tambah Guru atau Karyawan'}</DialogTitle>
             <DialogDescription>
-              {isEditDialogOpen ? `Perbarui detail untuk ${selectedStaff?.name}.` : 'Isi formulir di bawah ini untuk mendaftarkan staf baru.'}
+              {isEditDialogOpen ? `Perbarui detail untuk ${selectedStaff?.name}.` : 'Isi formulir di bawah ini untuk mendaftarkan data baru.'}
             </DialogDescription>
           </DialogHeader>
           <StaffForm onSuccess={handleSuccess} existingStaff={selectedStaff} />
@@ -342,7 +342,7 @@ export default function StaffPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Apakah Anda benar-benar yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus staf
+              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus data untuk
               "{selectedStaff?.name}" secara permanen beserta akun pengguna yang terkait.
             </AlertDialogDescription>
           </AlertDialogHeader>

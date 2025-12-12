@@ -124,11 +124,11 @@ export function StaffForm({ onSuccess, existingStaff }: StaffFormProps) {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message || 'Gagal menyimpan data staf.');
+            throw new Error(data.message || 'Gagal menyimpan data.');
         }
 
         toast({
-            title: isEditMode ? "Staf Diperbarui" : "Staf Ditambahkan",
+            title: isEditMode ? "Data Diperbarui" : "Data Ditambahkan",
             description: `${values.name} telah berhasil ${isEditMode ? 'diperbarui' : 'ditambahkan'}.`,
         });
         onSuccess();
@@ -308,7 +308,7 @@ export function StaffForm({ onSuccess, existingStaff }: StaffFormProps) {
         )}
         <div className="flex justify-end pt-4">
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : (isEditMode ? 'Simpan Perubahan' : 'Tambah Staf')}
+            {isSubmitting ? "Menyimpan..." : (isEditMode ? 'Simpan Perubahan' : 'Tambah Data')}
             </Button>
         </div>
       </form>

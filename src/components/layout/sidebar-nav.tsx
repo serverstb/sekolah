@@ -33,7 +33,7 @@ const navItems = [
   },
   {
     href: "/dashboard/staff",
-    label: "Staf",
+    label: "Guru & Karyawan",
     icon: UserSquare,
   },
   {

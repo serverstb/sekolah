@@ -38,7 +38,7 @@ const formSchema = z.object({
     }
     return true;
 }, {
-    message: "Guru harus dipilih untuk peran 'teacher'.",
+    message: "Data guru harus dipilih untuk peran 'teacher'.",
     path: ["staffId"],
 });
 
@@ -201,11 +201,11 @@ export function UserForm({ onSuccess, existingUser }: UserFormProps) {
                 name="staffId"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Guru Terkait</FormLabel>
+                    <FormLabel>Data Guru Terkait</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                         <SelectTrigger>
-                            <SelectValue placeholder="Pilih guru" />
+                            <SelectValue placeholder="Pilih data guru" />
                         </SelectTrigger>
                         </FormControl>
                         <SelectContent>
