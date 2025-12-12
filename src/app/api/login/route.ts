@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     // Mengambil hash password langsung dari kolom 'password'
     const [rows]: any = await db.execute(
-      'SELECT id, email, password, role, teacherId FROM users WHERE email = ?',
+      'SELECT id, email, password, role, staffId FROM users WHERE email = ?',
       [email]
     );
 

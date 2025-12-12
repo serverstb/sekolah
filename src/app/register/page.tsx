@@ -34,7 +34,7 @@ export default function RegisterPage() {
       const response = await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role }), // teacherId is no longer sent
+        body: JSON.stringify({ email, password, role }),
       });
 
       const data = await response.json();
