@@ -146,7 +146,7 @@ export default function StudentsPage() {
           </div>
             <Button onClick={() => setOpen(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Tambah Siswa
+              Tambah
             </Button>
         </CardHeader>
         <CardContent>
