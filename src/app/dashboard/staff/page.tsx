@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -190,7 +189,7 @@ export default function StaffPage() {
           </div>
           <Button onClick={() => { setSelectedStaff(null); setIsAddDialogOpen(true); }}>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Tambah Data
+            Tambah
           </Button>
         </CardHeader>
         <CardContent>
