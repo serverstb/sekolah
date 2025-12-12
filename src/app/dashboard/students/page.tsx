@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, MoreHorizontal } from "lucide-react";
+import { PlusCircle, MoreHorizontal, BarcodeIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -48,6 +48,7 @@ import { StudentForm } from "./_components/student-form";
 import { useState, useMemo, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import Barcode from "react-barcode";
 
 type Student = {
     id: string;
@@ -65,6 +66,7 @@ export default function StudentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isBarcodeOpen, setIsBarcodeOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
@@ -85,7 +87,7 @@ export default function StudentsPage() {
 
   useEffect(() => {
     fetchStudents();
-  }, [toast]);
+  }, []);
 
   const totalPages = Math.ceil(students.length / ITEMS_PER_PAGE);
 
@@ -103,6 +105,11 @@ export default function StudentsPage() {
   const handleDeleteClick = (student: Student) => {
     setSelectedStudent(student);
     setIsAlertOpen(true);
+  };
+  
+  const handleBarcodeClick = (student: Student) => {
+    setSelectedStudent(student);
+    setIsBarcodeOpen(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -198,6 +205,10 @@ export default function StudentsPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                           <DropdownMenuItem onClick={() => handleBarcodeClick(student)}>
+                                <BarcodeIcon className="mr-2 h-4 w-4" />
+                                Barcode
+                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleEditClick(student)}>
                             Ubah
                           </DropdownMenuItem>
@@ -263,6 +274,19 @@ export default function StudentsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+        <Dialog open={isBarcodeOpen} onOpenChange={setIsBarcodeOpen}>
+            <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>Barcode untuk {selectedStudent?.name}</DialogTitle>
+                    <DialogDescription>
+                        Pindai barcode ini untuk mencatat absensi.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="flex items-center justify-center p-6">
+                    {selectedStudent && <Barcode value={selectedStudent.id} />}
+                </div>
+            </DialogContent>
+        </Dialog>
     </>
   );
 }

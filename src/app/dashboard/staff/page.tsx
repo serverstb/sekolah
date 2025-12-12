@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, BookOpen, MoreHorizontal, Users, UserSquare } from "lucide-react";
+import { PlusCircle, BookOpen, MoreHorizontal, Users, UserSquare, BarcodeIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -49,6 +50,7 @@ import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Barcode from "react-barcode";
 
 
 export type Staff = {
@@ -78,6 +80,7 @@ export default function StaffPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isBarcodeOpen, setIsBarcodeOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState('all');
@@ -147,6 +150,11 @@ export default function StaffPage() {
   const handleDeleteClick = (staffMember: Staff) => {
     setSelectedStaff(staffMember);
     setIsAlertOpen(true);
+  };
+
+  const handleBarcodeClick = (staffMember: Staff) => {
+    setSelectedStaff(staffMember);
+    setIsBarcodeOpen(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -280,6 +288,10 @@ export default function StaffPage() {
                                 </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handleBarcodeClick(staffMember)}>
+                                    <BarcodeIcon className="mr-2 h-4 w-4" />
+                                    Barcode
+                                </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleEditClick(staffMember)}>
                                     Ubah
                                 </DropdownMenuItem>
@@ -351,6 +363,21 @@ export default function StaffPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Barcode Dialog */}
+      <Dialog open={isBarcodeOpen} onOpenChange={setIsBarcodeOpen}>
+        <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+                <DialogTitle>Barcode untuk {selectedStaff?.name}</DialogTitle>
+                <DialogDescription>
+                    Pindai barcode ini untuk mencatat absensi.
+                </DialogDescription>
+            </DialogHeader>
+            <div className="flex items-center justify-center p-6">
+                {selectedStaff && <Barcode value={selectedStaff.id} />}
+            </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
